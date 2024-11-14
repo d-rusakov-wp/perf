@@ -2,7 +2,7 @@
 
 # Презентация:<br>«Семь раз отмерь, один раз оптимизируй»
 
-![Deploy status](https://github.com/d-rusakov-wp/perf1/actions/workflows/deploy.yml/badge.svg?branch=main&event=push)
+![Deploy status](https://github.com/d-rusakov-wp/perf/actions/workflows/deploy.yml/badge.svg?branch=main&event=push)
 
 ## 🐱‍💻 Команды
 
