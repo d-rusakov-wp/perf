@@ -1,6 +1,6 @@
 # Презентация: «Семь раз отмерь, один раз оптимизируй»
 
-![Логотип](./themes/tw/images/logo.png =150x150)
+<img src="./themes/tw/images/logo.png" width="150" height="150" alt="Логотип">
 
 ![Deploy status](https://github.com/d-rusakov-wp/perf/actions/workflows/deploy.yml/badge.svg?branch=main&event=push)
 
