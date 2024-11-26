@@ -37,9 +37,7 @@
     <link rel="shortcut icon" href="./themes/tw/images/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="./themes/tw/images/apple-touch-icon.png" />
 
-    <!-- prettier-ignore -->
-    <link rel="stylesheet" href="node_modules/@shower/ribbon/styles/styles.css">
-
+    <link rel="stylesheet" href="./themes/ribbon-custom/styles/styles.css">
     <link rel="stylesheet" href="./themes/tw/packages/highlight/hybrid.min.css" />
     <link rel="stylesheet" href="./bundled/main.css" />
   </head>
@@ -321,7 +319,7 @@
         controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
         poster=""
       >
-        <source src="./themes/tw/video/apple.mp4" type="video/mp4" />
+        <source src="./themes/tw/video/basics/apple.mp4" type="video/mp4" />
       </video>
     </section>
 
@@ -484,11 +482,11 @@
 
     <section class="slide">
       <div class="shout flex items-center justify-center">
-        <h2>Эффективность</h2>
         <picture>
           <source srcset="./themes/tw/pictures/emoji/battery.webp" type="image/webp" />
           <img src="./themes/tw/pictures/emoji/battery.gif" alt="🔋" width="52" height="52" />
         </picture>
+        <h2>Эффективность</h2>
       </div>
     </section>
 
@@ -973,18 +971,18 @@
     <section class="slide">
       <pre class="place">
         <code class="language-typescript">
-          Кроме того, массивы двойных значений работают быстрее - скрытый класс массива отслеживает типы элементов, а массивы, содержащие только двойные значения, распаковываются (что вызывает скрытое изменение класса). Однако небрежное манипулирование массивами может вызвать дополнительную работу из-за упаковки и распаковки - например
+                    Кроме того, массивы двойных значений работают быстрее - скрытый класс массива отслеживает типы элементов, а массивы, содержащие только двойные значения, распаковываются (что вызывает скрытое изменение класса). Однако небрежное манипулирование массивами может вызвать дополнительную работу из-за упаковки и распаковки - например
 
 
-var a = new Array();
-a[0] = 77;   // Allocates
-a[1] = 88;
-a[2] = 0.5;   // Allocates, converts
-a[3] = true; // Allocates, converts```
-менее эффективен, чем:
+          var a = new Array();
+          a[0] = 77;   // Allocates
+          a[1] = 88;
+          a[2] = 0.5;   // Allocates, converts
+          a[3] = true; // Allocates, converts```
+          менее эффективен, чем:
 
 
-var a = [77, 88, 0.5, true];
+          var a = [77, 88, 0.5, true];
         </code>
       </pre>
     </section>
@@ -992,8 +990,6 @@ var a = [77, 88, 0.5, true];
     <section class="slide">
       <pre class="place">
         <code class="language-typescript">
-           Если вы можете, вы должны объявить свои свойства в конструкторе . Это гарантирует, что структура объекта останется прежней, чтобы V8 мог оптимизировать ваши объекты.
-
            class Point {
              constructor(x,y) {
                this.x = x
@@ -1005,6 +1001,9 @@ var a = [77, 88, 0.5, true];
            const p2 = new Point(33, 44)
         </code>
       </pre>
+      <footer>
+        <p>Если вы&nbsp;можете, вы&nbsp;должны объявить свои свойства в&nbsp;конструкторе. Это гарантирует, что структура объекта останется прежней, чтобы V8&nbsp;мог оптимизировать ваши объекты</p>
+      </footer>
     </section>
 
     <section class="slide">
@@ -1856,6 +1855,7 @@ console.log(result);
         preload="metadata"
         class="next absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
         width="500"
+        preload="none"
         controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
         poster="./themes/tw/video/possibilities/yandex-tecnhologies.jpg"
       >
@@ -2885,17 +2885,6 @@ console.log(result);
     </section>
 
     <section class="slide">
-      <img
-        class="cover"
-        src="./themes/tw/images/possibilities/dev-tools/perfomance/perfomance-insights.jpg
-      "
-        alt=""
-        width=""
-        height=""
-      />
-    </section>
-
-    <section class="slide">
       <img class="cover" src="./themes/tw/images/cases/2pdf.jpg" alt="" width="" height="" />
     </section>
 
@@ -2913,10 +2902,6 @@ console.log(result);
 
     <section class="slide">
       <img class="cover" src="./themes/tw/images/cases/2pdf-promo.jpg" alt="" width="" height="" />
-    </section>
-
-    <section class="slide">
-      <img class="cover" src="./themes/tw/images/tips/ts/perfomance.jpg" alt="" width="" height="" />
     </section>
 
     <section class="slide">
@@ -2955,17 +2940,13 @@ console.log(result);
     </section>
 
     <section class="slide">
-      <img class="cover" src="./themes/tw/images/shared/tools/css-logo.jpg" alt="" width="" height="" />
-    </section>
-
-    <section class="slide">
       <img class="cover" src="./themes/tw/images/preview/memory-error.jpg" alt="" width="" height="" />
     </section>
 
     <section class="slide">
       <img
         class="cover"
-        src="./themes/tw/images/possibilities/dev-tools/perfomance/memory.jpg"
+        src="./themes/tw/images/possibilities/dev-tools/performance/memory.jpg"
         alt=""
         width=""
         height=""
@@ -2975,7 +2956,7 @@ console.log(result);
     <section class="slide">
       <img
         class="cover"
-        src="./themes/tw/images/possibilities/dev-tools/perfomance/heap-profile.jpg"
+        src="./themes/tw/images/possibilities/dev-tools/performance/heap-profile.jpg"
         alt=""
         width=""
         height=""
@@ -2989,7 +2970,7 @@ console.log(result);
     <section class="slide">
       <img
         class="cover"
-        src="./themes/tw/images/possibilities/dev-tools/perfomance/base.jpg"
+        src="./themes/tw/images/possibilities/dev-tools/performance/base.jpg"
         alt=""
         width=""
         height=""
@@ -3308,7 +3289,7 @@ console.log(result);
     <section class="slide">
       <div class="">
         <h2 class="shout">content-visibility</h2>
-        <img src="./themes/tw/images/shared/languages/css.svg" alt="CSS" width="300" height="100" />
+        <img class="cover" src="./themes/tw/images/shared/tools/css-logo.jpg" alt="CSS logos" width="" height="" />
       </div>
       <a
         rel="noopener noreferrer"
@@ -3709,6 +3690,6 @@ something at 60 frames a second for a game and suddenly, you run out of real-
     <script type="module" src="./themes/tw/packages/custom-scale.js"></script>
     <script type="module" src="./themes/tw/packages/playing-video.js"></script>
     <script type="module" src="./themes/tw/packages/upload-iframe.js"></script>
-    <script type="module" src="./themes/tw/packages/baseline-status.min.js"></script>
+    <script defer type="module" priority="low" src="./themes/tw/packages/baseline-status.min.js"></script>
   </body>
 </html>

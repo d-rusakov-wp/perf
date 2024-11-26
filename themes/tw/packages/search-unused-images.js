@@ -1,6 +1,6 @@
-import fs from "node:fs";
-import path from "node:path";
-import pico from "picocolors";
+const fs = require("node:fs");
+const path = require("node:path");
+const { red, green } = require("picocolors");
 
 const INDEX_HTML_PATH = "./index.html";
 const IMAGES_FOLDER_PATH = "./themes/tw";
@@ -36,6 +36,6 @@ const missingImages = findMissingImages(IMAGES_FOLDER_PATH);
 
 console.log(
   missingImages.length > 0
-    ? `${pico.red("Неиспользованные изображения:\n")}${missingImages.join("\n")}`
-    : pico.green("Нет неиспользованных изображений")
+    ? `${red("Неиспользованные изображения:\n")}${missingImages.join("\n")}`
+    : green("Нет неиспользованных изображений")
 );

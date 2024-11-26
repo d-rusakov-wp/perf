@@ -3,16 +3,10 @@
 @tailwind utilities;
 @tailwind variants;
 
-@property --scrollbar {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-
 @layer reset {
   body {
     -webkit-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: theme(colors.transparent);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -105,13 +99,14 @@
       @apply bg-gray;
     }
 
+    h1,
+    h2,
+    p {
+      @apply font-arsenal;
+    }
+
     .slide {
       @apply bg-gray p-[24px_90px_0] shadow-[0_20px_50px_rgb(0_0_0_/_30%)];
-
-      h1,
-      h2 {
-        @apply font-arsenal;
-      }
 
       h2 {
         @apply text-[52px];
@@ -189,6 +184,10 @@
         }
       }
 
+      picture:has(+ h2) {
+        @apply mr-2;
+      }
+
       table {
         th,
         td {
@@ -215,30 +214,18 @@
           @apply mx-auto;
         }
       }
+
+      footer {
+        @apply bg-orange text-black;
+      }
     }
   }
 }
 
 @layer components {
-  html {
-    container-type: inline-size;
-    min-height: 150vh;
-  }
-
-  body {
-    --scrollbar: calc(100vw - 100cqw);
-  }
-
   .custom-scrollbar {
-    scrollbar-gutter: stable;
-
-    @supports not selector(::-webkit-scrollbar) {
-      /*scrollbar-color: text-orange transparent;*/
-      scrollbar-width: thin;
-    }
-
     &::-webkit-scrollbar {
-      @apply w-[18px]; /* counter(val) */
+      @apply w-[18px];
     }
 
     &::-webkit-scrollbar-track,
@@ -256,6 +243,11 @@
 
     &::-webkit-scrollbar-button {
       @apply hidden;
+    }
+
+    @supports not selector(::-webkit-scrollbar) {
+      scrollbar-color: theme(colors.orange) theme(colors.transparent);
+      scrollbar-width: thin;
     }
   }
 
@@ -295,16 +287,18 @@
     @apply w-fit font-arsenal text-[62px] font-bold uppercase leading-normal text-transparent;
     -webkit-text-stroke: 2px theme(colors.white);
     background:
-      radial-gradient(1.13em at 50% 1.6em, theme(colors.white) 99%, transparent 101%) calc(50% - 1.6em) 0/3.2em 100%
+      radial-gradient(1.13em at 50% 1.6em, theme(colors.white) 99%, theme(colors.transparent) 101%) calc(50% - 1.6em) 0/3.2em 100%
         text,
-      radial-gradient(1.13em at 50% -0.8em, transparent 99%, theme(colors.white) 101%) 50% 0.8em/3.2em 100% repeat-x
+      radial-gradient(1.13em at 50% -0.8em, theme(colors.transparent) 99%, theme(colors.white) 101%) 50% 0.8em/3.2em 100% repeat-x
         text;
   }
 
   .upload-btn-iframe {
+    transition: background-color 1s 200ms;
+
     &::before {
       @apply absolute -left-full top-0 z-[1] h-full w-full opacity-0 transition-none content-[''];
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+      background: linear-gradient(90deg, theme(colors.transparent), rgba(255, 255, 255, 0.8), theme(colors.transparent));
     }
 
     &:hover {
@@ -338,20 +332,27 @@
         @apply text-base uppercase;
       }
     }
-  }
 
-  .animated-gradient {
-    @apply h-screen bg-[400%_400%];
-    background: linear-gradient(-45deg, #b3441e, #7927e0, #18404a, #23d5ab);
+    &:active {
+      background-color: PaleTurquoise;
+    }
+
+    &:not(:hover){
+      animation-play-state: paused;
+    }
   }
 }
 
 @layer utilities {
-  .all-clear-numbers .slide::after {
-    @apply content-none;
+  .all-clear-numbers {
+    .slide::after {
+      @apply content-none;
+    }
   }
 
-  .list .list-hidden {
-    @apply hidden;
+  .list {
+    .list-hidden {
+      @apply hidden;
+    }
   }
 }

@@ -40,11 +40,12 @@ class Scale extends HTMLElement {
           align-items: center;
           justify-content: flex-end;
           padding-right: 5px;
-          background-color: #b3441e;
           border-radius: 0.125rem;
-          font-size: 14px;
+          font-size: 12px;
           content: '${this.getAttribute("winner") ? "✅" : ""}';
           width: ${this.getAttribute("percentage")}%;
+          background: #b3441e;
+          background: repeating-linear-gradient(-45deg, #b3441e, #b3441e 5px, #0000 5px, #0000 10px);
         }
       }
     `;
