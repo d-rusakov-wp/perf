@@ -99,7 +99,9 @@
 
     h1,
     h2,
-    p {
+    p,
+    a,
+    figcaption {
       @apply font-arsenal;
     }
 
@@ -122,7 +124,7 @@
         @apply text-orange no-underline;
 
         &.copyright {
-          @apply rounded-sm bg-orange bg-none p-[3px_10px] font-bold text-gray transition-opacity;
+          @apply rounded-sm bg-orange bg-none p-[3px_10px] font-bold text-gray transition-opacity uppercase;
 
           &:hover {
             @apply opacity-80;
@@ -150,7 +152,7 @@
         @apply leading-[1.8];
 
         li {
-          @apply text-[34px];
+          @apply text-[28px];
         }
       }
 
@@ -175,11 +177,11 @@
       }
 
       img:not(.cover) {
-        @apply rounded-sm;
+          @apply rounded-sm;
       }
 
-      picture:has(+ h2) {
-        @apply mr-2;
+      h2 + picture {
+        @apply ml-2;
       }
 
       table {
