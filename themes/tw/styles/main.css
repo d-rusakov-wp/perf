@@ -43,10 +43,8 @@
     text-wrap: pretty;
   }
 
-  video {
-    &::cue {
-      @apply text-base;
-    }
+  video::cue {
+    @apply text-base;
   }
 }
 
@@ -116,10 +114,8 @@
         }
       }
 
-      .shout {
-        h2 {
-          @apply m-0;
-        }
+      .shout h2 {
+        @apply m-0;
       }
 
       a {
@@ -178,10 +174,8 @@
         }
       }
 
-      img {
-        &:not(.cover) {
-          @apply rounded-sm;
-        }
+      img:not(.cover) {
+        @apply rounded-sm;
       }
 
       picture:has(+ h2) {
@@ -344,15 +338,11 @@
 }
 
 @layer utilities {
-  .all-clear-numbers {
-    .slide::after {
-      @apply content-none;
-    }
+  .all-clear-numbers .slide::after {
+    @apply content-none;
   }
 
-  .list {
-    .list-hidden {
-      @apply hidden;
-    }
+  .list .list-hidden {
+    @apply hidden;
   }
 }
