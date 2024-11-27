@@ -54,6 +54,8 @@ class Scale extends HTMLElement {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function init() {
   customElements.define("custom-scale", Scale);
-});
+}
+
+document.addEventListener("DOMContentLoaded", init);

@@ -4,6 +4,7 @@ const { red, green } = require("picocolors");
 
 const INDEX_HTML_PATH = "./index.html";
 const IMAGES_FOLDER_PATH = "./themes/tw";
+
 const EXCLUDED_FORMATS = ["ttf", "woff", "css", "js", "mp4"];
 
 function getExtension(fileName) {
@@ -11,12 +12,13 @@ function getExtension(fileName) {
 }
 
 function findMissingImages(folderPath) {
-  const files = fs.readdirSync(folderPath).filter(file => !EXCLUDED_FORMATS.includes(getExtension(file)));
   const missingImages = [];
+
+  const files = fs.readdirSync(folderPath).filter(file => !EXCLUDED_FORMATS.includes(getExtension(file)));
   const indexHtmlContent = fs.readFileSync(INDEX_HTML_PATH, "utf8");
 
   files.forEach(file => {
-    const filePath = `./${path.join(folderPath, file)}`;
+    const filePath = path.join(folderPath, file);
 
     if (fs.lstatSync(filePath).isDirectory()) {
       missingImages.push(...findMissingImages(filePath));
