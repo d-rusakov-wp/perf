@@ -24,6 +24,10 @@ function initObservers(slidesWithVideo) {
 
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
+      const hasFull = window.location.hostname.includes("full");
+
+      if (!hasFull) return;
+
       const element = entry.target;
 
       if (element.tagName !== "VIDEO") return;
