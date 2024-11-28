@@ -251,14 +251,14 @@
     @apply relative overflow-auto rounded-2xl p-12 text-2xl;
 
     .toc__list-item {
-      @apply grid grid-cols-[auto_max-content] gap-[0_1ch];
+      @apply font-arsenal grid grid-cols-[auto_max-content] gap-[0_1ch];
 
       grid-template-areas: "chapter page";
       align-items: end;
     }
 
     .toc__name {
-      @apply relative overflow-hidden after:absolute after:pl-[0.25ch] after:text-right after:content-['_._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'_'._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'_'._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'];
+      @apply font-arsenal mb-0 relative overflow-hidden after:absolute after:pl-[0.25ch] after:text-right after:content-['_._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'_'._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'_'._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'];
       grid-area: chapter;
     }
   }
