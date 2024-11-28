@@ -16,8 +16,7 @@
   },
   "dependencies": {
     "@shower/core": "^3.3.0",
-    "@shower/ribbon": "3.5.2",
-    "tailwindcss-motion": "0.4.3-beta"
+    "@shower/ribbon": "3.5.2"
   },
   "devDependencies": {
     "@commitlint/cli": "19.6.0",

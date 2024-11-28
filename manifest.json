@@ -6,8 +6,8 @@
   "dir": "ltr",
   "id": "/",
   "start_url": "/",
-  "theme_color": "#18404a",
-  "background_color": "#18404a",
+  "theme_color": "#2c3c44",
+  "background_color": "#2c3c44",
   "display": "browser",
   "orientation": "natural",
   "icons": [

@@ -1,8 +1,5 @@
-import TailwindCSSMotion from "tailwindcss-motion";
-
 module.exports = {
   content: ["./index.html"],
-  plugins: [TailwindCSSMotion],
   theme: {
     colors: {
       transparent: "transparent",
@@ -43,7 +40,7 @@ module.exports = {
     },
     keyframes: {
       "interrupt-click": {
-        to: { "pointer-events": "none" }
+        to: { "pointer-events": "none" },
       },
       slide: {
         from: { left: "-100%" },

@@ -90,6 +90,10 @@
 
       .slide {
         @apply rounded-md;
+
+        &.active {
+          @apply shadow-[0_0_0_1px_#ff7d43,0_0_0_20px_#ff7d43,0_20px_50px_rgb(0_0_0_/_30%)];
+        }
       }
     }
 
@@ -101,6 +105,7 @@
     h2,
     p,
     a,
+    li,
     figcaption {
       @apply font-arsenal;
     }
@@ -124,7 +129,7 @@
         @apply text-orange no-underline;
 
         &.copyright {
-          @apply rounded-sm bg-orange bg-none p-[3px_10px] font-bold text-gray transition-opacity uppercase;
+          @apply rounded-sm bg-orange bg-none p-[3px_10px] font-bold uppercase text-gray transition-opacity;
 
           &:hover {
             @apply opacity-80;
@@ -174,10 +179,6 @@
         code {
           @apply pb-0 pt-0 text-lg;
         }
-      }
-
-      img {
-          @apply rounded-sm shadow-[0_20px_50px_rgb(0_0_0_/_30%)];
       }
 
       h2 + picture {
@@ -251,14 +252,25 @@
     @apply relative overflow-auto rounded-2xl p-12 text-2xl;
 
     .toc__list-item {
-      @apply font-arsenal grid grid-cols-[auto_max-content] gap-[0_1ch];
+      @apply grid grid-cols-[auto_max-content] gap-[0_1ch] font-arsenal;
 
       grid-template-areas: "chapter page";
       align-items: end;
     }
 
+    .toc__list-link {
+      @apply grid grid-cols-[auto_max-content] gap-[0_1ch] !bg-none font-arsenal !text-white;
+
+      grid-template-areas: "chapter page";
+      align-items: end;
+
+      &:hover {
+        @apply !text-orange;
+      }
+    }
+
     .toc__name {
-      @apply font-arsenal mb-0 relative overflow-hidden after:absolute after:pl-[0.25ch] after:text-right after:content-['_._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'_'._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'_'._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'];
+      @apply relative mb-0 overflow-hidden font-arsenal after:absolute after:pl-[0.25ch] after:text-right after:content-['_._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'_'._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'_'._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._._'];
       grid-area: chapter;
     }
   }
@@ -283,10 +295,10 @@
     @apply w-fit font-arsenal text-[62px] font-bold uppercase leading-normal text-transparent;
     -webkit-text-stroke: 2px theme(colors.white);
     background:
-      radial-gradient(1.13em at 50% 1.6em, theme(colors.white) 99%, theme(colors.transparent) 101%) calc(50% - 1.6em) 0/3.2em 100%
-        text,
-      radial-gradient(1.13em at 50% -0.8em, theme(colors.transparent) 99%, theme(colors.white) 101%) 50% 0.8em/3.2em 100% repeat-x
-        text;
+      radial-gradient(1.13em at 50% 1.6em, theme(colors.white) 99%, theme(colors.transparent) 101%) calc(50% - 1.6em)
+        0/3.2em 100% text,
+      radial-gradient(1.13em at 50% -0.8em, theme(colors.transparent) 99%, theme(colors.white) 101%) 50% 0.8em/3.2em
+        100% repeat-x text;
   }
 
   .upload-btn-iframe {
@@ -294,7 +306,12 @@
 
     &::before {
       @apply absolute -left-full top-0 z-[1] h-full w-full opacity-0 transition-none content-[''];
-      background: linear-gradient(90deg, theme(colors.transparent), rgba(255, 255, 255, 0.8), theme(colors.transparent));
+      background: linear-gradient(
+        90deg,
+        theme(colors.transparent),
+        rgba(255, 255, 255, 0.8),
+        theme(colors.transparent)
+      );
     }
 
     &:hover {
@@ -333,7 +350,7 @@
       background-color: PaleTurquoise;
     }
 
-    &:not(:hover){
+    &:not(:hover) {
       animation-play-state: paused;
     }
   }
@@ -344,7 +361,7 @@
     @apply content-none;
   }
 
-  .list .list-hidden {
+  .shower.list .list-hidden {
     @apply hidden;
   }
 }
