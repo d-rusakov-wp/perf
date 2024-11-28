@@ -176,8 +176,8 @@
         }
       }
 
-      img:not(.cover) {
-          @apply rounded-sm;
+      img {
+          @apply rounded-sm shadow-[0_20px_50px_rgb(0_0_0_/_30%)];
       }
 
       h2 + picture {
