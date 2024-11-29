@@ -98,6 +98,9 @@
     <section class="slide">
       <h2 class="sr-only">Птица</h2>
       <img class="place rounded-sm" src="themes/tw/images/preview/bird.jpg" width="536" height="490" alt="Птица" />
+      <footer>
+        <p>Не&nbsp;выдумка как и&nbsp;производителньость вашего проекта.</p>
+      </footer>
     </section>
 
     <section class="slide">
@@ -109,6 +112,9 @@
         width="180"
         height="223"
       />
+      <footer>
+        <p>Нет уникальной отмычки.</p>
+      </footer>
     </section>
 
     <section class="slide">
@@ -128,6 +134,9 @@
         class="next absolute left-0 top-[65%] w-full -translate-y-2/4 text-center font-arsenal text-7xl font-bold leading-none text-light-gray"
         >ведь таски закрываются</span
       >
+      <footer>
+        <p>Знать проблему недостаточно&nbsp;&mdash; нужно также глубоко понимать для кого вы&nbsp;её&nbsp;решаете.</p>
+      </footer>
     </section>
 
     <section class="slide">
@@ -259,6 +268,9 @@
       <a class="copyright" href="https://keepsimple.io/ru/uxcore/" target="_blank" rel="noopener noreferrer"
         >UX&nbsp;Core</a
       >
+      <footer>
+        <p>Производительность влияет на&nbsp;поведение пользователей.</p>
+      </footer>
     </section>
 
     <section class="slide">
@@ -1695,7 +1707,7 @@
       </p>
       <p>
         Если оба операнда представлены как целые числа, процессор может вычислить результат очень эффективно.
-        V8&nbsp;имеет дополнительные быстрые пути для случаев, когда divisorявляется степенью двойки. Для значений,
+        V8&nbsp;имеет дополнительные быстрые пути для случаев, когда divisor является степенью двойки. Для значений,
         представленных как числа с&nbsp;плавающей точкой, вычисления намного сложнее и&nbsp;занимают гораздо больше
         времени
       </p>
@@ -2582,6 +2594,30 @@ console.log(result);
         >Мономорфизм</a
       >
       <footer>
+        <p>Мономофризм что у&nbsp;объектов одинаковые ключи без отличий.</p>
+        <p>Мегаморфизм тут объекты совершенно разные и&nbsp;их&nbsp;нельзя сравнивать.</p>
+        <p>Полиморфизм у&nbsp;объектов общая структура но&nbsp;меняются небольшие отличия.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          function add(a, b) {
+            return a.a + a.b + a.c + a.d +
+                    b.a + b.b + b.c + b.d;
+          }
+
+          let result = 0;
+
+          for (let i = 0; i < 1000000; i++) {
+            result += add(data1, data2);
+            result += add(data3, data4);
+          }
+        </code>
+      </pre>
+      <footer>
         <p>
           Если вместо этого передать объект не&nbsp;с&nbsp;формой, { x, y }а с&nbsp;формой { y, x }, движку нужно будет
           отменить свое предположение, и&nbsp;функция внезапно станет значительно медленнее. Я&nbsp;собираюсь ограничить
@@ -2609,25 +2645,6 @@ console.log(result);
           по&nbsp;значению, как это делает SpiderMonkey, а&nbsp;остальное передается как указатели.
         </p>
       </footer>
-    </section>
-
-    <section class="slide">
-      <h2 class="sr-only">Код</h2>
-      <pre class="place">
-        <code class="language-typescript">
-          function add(a, b) {
-            return a.a + a.b + a.c + a.d +
-                    b.a + b.b + b.c + b.d;
-          }
-
-          let result = 0;
-
-          for (let i = 0; i < 1000000; i++) {
-            result += add(data1, data2);
-            result += add(data3, data4);
-          }
-        </code>
-      </pre>
     </section>
 
     <section class="slide">
@@ -3169,12 +3186,12 @@ console.log(result);
           Я&nbsp;не&nbsp;буду вдаваться в&nbsp;подробности о&nbsp;структурах данных, так как они требуют отдельного
           поста. Но&nbsp;имейте в&nbsp;виду, что использование некорректных структур данных для вашего варианта
           использования может иметь большее влияние, чем любая из&nbsp;оптимизаций выше . Я&nbsp;бы посоветовал вам
-          ознакомиться с&nbsp;собственными, такими как Mapи Set, и&nbsp;узнать о&nbsp;связанных списках, приоритетных
+          ознакомиться с&nbsp;собственными, такими как Map и Set, и&nbsp;узнать о&nbsp;связанных списках, приоритетных
           очередях, деревьях (RB&nbsp;и&nbsp;B+) и&nbsp;попытках.
         </p>
         <p>
-          Но&nbsp;для быстрого примера давайте сравним, как Array.includesработает функция against Set.hasдля небольшого
-          списка:
+          Но&nbsp;для быстрого примера давайте сравним, как Array.includes работает функция against Set.has для
+          небольшого списка:
         </p>
       </footer>
     </section>
@@ -3231,11 +3248,11 @@ console.log(result);
       <footer>
         <p>
           Как объяснялось в&nbsp;разделе&nbsp;2, движки используют формы для оптимизации объектов. Однако, когда форма
-          становится слишком большой, у&nbsp;движка нет выбора, кроме как использовать обычную хэш-карту (например,
-          Mapобъект). И&nbsp;как мы&nbsp;видели в&nbsp;разделе&nbsp;5, промахи кэша значительно снижают
-          производительность. Хэш-карты подвержены этому, потому что их&nbsp;данные обычно случайным образом
-          и&nbsp;равномерно распределены по&nbsp;области памяти, которую они занимают. Давайте посмотрим, как она ведет
-          себя с&nbsp;этой картой некоторых пользователей, индексированных по&nbsp;их&nbsp;идентификатору.
+          становится слишком большой, у&nbsp;движка нет выбора, кроме как использовать обычную хэш-карту (например, Map
+          объект). И&nbsp;как мы&nbsp;видели в&nbsp;разделе&nbsp;5, промахи кэша значительно снижают производительность.
+          Хэш-карты подвержены этому, потому что их&nbsp;данные обычно случайным образом и&nbsp;равномерно распределены
+          по&nbsp;области памяти, которую они занимают. Давайте посмотрим, как она ведет себя с&nbsp;этой картой
+          некоторых пользователей, индексированных по&nbsp;их&nbsp;идентификатору.
         </p>
       </footer>
     </section>
@@ -3839,14 +3856,14 @@ console.log(result);
 
     <section class="slide">
       <h2 class="sr-only">Test</h2>
-      <img class="covplace rounded-smer" src="themes/tw/images/cases/wiki.jpg" alt="Wiki" width="500" height="100" />
+      <img class="place rounded-sm" src="themes/tw/images/cases/wiki.jpg" alt="Wiki" width="500" height="100" />
     </section>
 
     <section class="slide">
       <h2 class="sr-only">Test</h2>
       <div class="">
         <img
-          class="covplace rounded-smer"
+          class="place rounded-sm"
           src="themes/tw/images/shared/tools/css-logo.webp"
           alt="CSS logos"
           width="4096"
@@ -4189,6 +4206,16 @@ something at 60 frames a second for a game and suddenly, you run out of real-
         <br />
         <span>Выводы</span>
       </h2>
+      <footer>
+        <p>
+          Советы по&nbsp;производительности вызывают привыкание, и&nbsp;иногда сосредоточение внимания сначала
+          на&nbsp;более глубоких советах может сильно отвлечь от&nbsp;реальных проблем. Вам необходимо получить
+          целостное представление о производительности вашего веб-приложения&nbsp;&mdash; прежде чем сосредоточиться
+          на&nbsp;этих советах по&nbsp;производительности, вам, вероятно, следует проанализировать свой код
+          с&nbsp;помощью таких инструментов, как PageSpeed , и&nbsp;получить оценку. Это поможет вам избежать
+          преждевременной оптимизации.
+        </p>
+      </footer>
     </section>
 
     <section class="slide">
