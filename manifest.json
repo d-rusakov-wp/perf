@@ -1,7 +1,7 @@
 {
-  "name": "Perf",
-  "short_name": "Perf",
-  "description": "Презентация о производительности",
+  "name": "perf",
+  "short_name": "perf",
+  "description": "Доклад о производительности",
   "lang": "ru",
   "dir": "ltr",
   "id": "/",

@@ -1,6 +1,6 @@
 {
   "name": "perf",
-  "description": "Презентация о производительности",
+  "description": "Доклад о производительности",
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
@@ -10,8 +10,8 @@
     "format": "prettier . --write",
     "build": "npm run tw:build",
     "publish": "npm run build & shower publish --files '**' --files '!{docs,node_modules}{,/**}' --files '!*.{md,toml,json,yml,lockb,config.js,config.ts}'",
-    "tw:watch": "tailwindcss -i ./themes/tw/styles/main.css -o ./bundled/main.css --watch",
-    "tw:build": "tailwindcss -i ./themes/tw/styles/main.css -o ./bundled/main.css --minify",
+    "tw:watch": "tailwindcss -i ./themes/tw/styles/styles.css -o ./bundled/styles.css --watch",
+    "tw:build": "tailwindcss -i ./themes/tw/styles/styles.css -o ./bundled/styles.css --minify",
     "find-unused-images": "node ./themes/tw/packages/search-unused-images.js"
   },
   "dependencies": {

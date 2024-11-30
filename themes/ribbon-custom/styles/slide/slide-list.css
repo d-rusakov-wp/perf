@@ -18,3 +18,12 @@
     0 0 0 20px rgb(0 0 0 / 10%),
     0 20px 50px rgb(0 0 0 / 30%);
 }
+
+/* Active */
+
+.shower.list .slide.active {
+  box-shadow:
+    0 0 0 1px #376da3,
+    0 0 0 20px #4b86c2,
+    0 20px 50px rgb(0 0 0 / 30%);
+}
