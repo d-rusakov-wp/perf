@@ -3,6 +3,12 @@ flowchart TB
   subgraph themes
     direction LR
 
+    subgraph ribbon-custom
+      direction LR
+
+      styles --> index.html
+    end
+
     subgraph tw
       direction LR
 
