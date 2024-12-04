@@ -114,18 +114,12 @@
       />
       <footer>
         <p>Нет уникальной отмычки.</p>
+        <p>Избежать загрузки лишних ресурсов.</p>
+        <p>Уменьшить размер ресурсов.</p>
+        <p>Уменьшить время получения ресурсов.</p>
+        <p>Отложить загрузку второстепенных ресурсов.</p>
+        <p>Избегать блокировки основного потока</p>
       </footer>
-    </section>
-
-    <section class="slide">
-      <h2>Цель оптимизаций</h2>
-      <ul>
-        <li class="next">Избежать загрузки лишних ресурсов</li>
-        <li class="next">Уменьшить размер ресурсов</li>
-        <li class="next">Уменьшить время получения ресурсов</li>
-        <li class="next">Отложить загрузку второстепенных ресурсов</li>
-        <li class="next">Избегать блокировки основного потока</li>
-      </ul>
     </section>
 
     <section class="slide">
@@ -186,7 +180,7 @@
     </section>
 
     <section class="slide group">
-      <h2>Какой план? (Summary)</h2>
+      <h2>Какой план? (summary)</h2>
       <img
         class="next list-hidden float-right translate-x-[70px] translate-y-[200px] group-has-[&.visited]:hidden"
         src="themes/tw/pictures/memes/plan.jpg"
@@ -244,12 +238,13 @@
       </h2>
     </section>
 
-    <section class="slide">
+    <section class="slide group">
       <h2 class="shout left-[50%] !m-auto !ml-[120px] !text-left">
         <span class="block text-5xl text-light-gray">Что такое</span>
-        <span class="block text-7xl">веб-производительность?</span>
+        <span class="block text-7xl group-has-[#perf-need.active]:hidden" id="perf">производительность?</span>
+        <span class="next block" id="perf-need">веб-производительность?</span>
       </h2>
-      <p class="note">perfo<span class="text-orange">R</span>mance</p>
+      <!--      <p class="note">perfo<span class="text-orange">R</span>mance</p>-->
       <a class="copyright" rel="noopener noreferrer" target="_blank" href="https://doka.guide/js/performance"
         >Производительность</a
       >
@@ -585,14 +580,14 @@
     </section>
 
     <section class="slide">
-      <div class="">
-        <h2 class="shout">
+      <div class="shout flex items-center justify-center">
+        <h2 class="flex items-center justify-center">
           Web Vitals
-          <span class="next">-&gt; Core Web Vitals</span>
+          <span> -&gt; Core Web Vitals</span>
         </h2>
         <picture>
           <source srcset="themes/tw/pictures/emoji/lightning.webp" type="image/webp" />
-          <img src="themes/tw/pictures/emoji/lightning.gif" alt="⚡" width="32" height="32" />
+          <img src="themes/tw/pictures/emoji/lightning.gif" alt="⚡" width="52" height="52" />
         </picture>
       </div>
       <a href="https://web.dev" class="copyright" target="_blank" rel="noopener noreferrer">Web Dev</a>
