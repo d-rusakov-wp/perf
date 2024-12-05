@@ -36,6 +36,17 @@
     <link rel="shortcut icon" href="themes/tw/images/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="themes/tw/images/apple-touch-icon.png" />
 
+    <link
+      rel="preload"
+      href="themes/tw/fonts/Arsenal/Regular.woff"
+      as="font"
+      type="font/woff"
+      crossorigin="anonymous"
+    />
+    <link rel="preload" href="themes/tw/fonts/Arsenal/Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="preconnect" href="//fonts.googleapis.com" crossorigin />
+
     <link rel="stylesheet" href="themes/ribbon-custom/styles/styles.css" />
     <link rel="stylesheet" href="themes/tw/packages/highlight/hybrid.min.css" />
     <link rel="stylesheet" href="bundled/styles.css" />
@@ -582,8 +593,8 @@
     <section class="slide">
       <div class="shout flex items-center justify-center">
         <h2 class="flex items-center justify-center">
-          Web Vitals
-          <span> -&gt; Core Web Vitals</span>
+          <span>Web Vitals</span>
+          <span>&nbsp;-&gt; Core Web Vitals</span>
         </h2>
         <picture>
           <source srcset="themes/tw/pictures/emoji/lightning.webp" type="image/webp" />
@@ -832,6 +843,7 @@
         >How-bun-supports-v8-apis-without-using-v8-part-1</a
       >
       <footer>
+        <p>Bun&nbsp;&mdash; уже не&nbsp;экзотика.</p>
         <p>
           Движок&nbsp;&mdash; это ядро любого браузера. Он&nbsp;представлен в&nbsp;виде скрипта и&nbsp;отвечает
           за&nbsp;преобразование кода Web-продукта в&nbsp;динамическое изображение, которое отображается на&nbsp;экране
@@ -1122,17 +1134,6 @@
     </section>
 
     <section class="slide">
-      <h2 class="sr-only">Test</h2>
-      <footer>
-        <p>
-          Обновление: Начиная с&nbsp;версии Chrome&nbsp;91 (выпущенной в&nbsp;2021&nbsp;году), в&nbsp;V8&nbsp;появился
-          дополнительный компилятор под названием Sparkplug между интерпретатором Ignition и&nbsp;оптимизирующим
-          компилятором TurboFan.
-        </p>
-      </footer>
-    </section>
-
-    <section class="slide">
       <h2 class="sr-only">Pipiline detail spidermonkey</h2>
       <img
         class="place rounded-sm"
@@ -1142,6 +1143,11 @@
         height="1448"
       />
       <footer>
+        <p>
+          Обновление: Начиная с&nbsp;версии Chrome&nbsp;91 (выпущенной в&nbsp;2021&nbsp;году), в&nbsp;V8&nbsp;появился
+          дополнительный компилятор под названием Sparkplug между интерпретатором Ignition и&nbsp;оптимизирующим
+          компилятором TurboFan.
+        </p>
         <p>
           Движок SpiderMonkey также начинает выполнять байт-код в&nbsp;интерпретаторе. Но&nbsp;у&nbsp;него есть
           дополнительный уровень Baseline, который означает, что горячий код сначала отправляется в&nbsp;Baseline.
@@ -1693,7 +1699,7 @@
     <section class="slide">
       <div>
         <h2 class="shout">Дом света <span class="next">(Lighthouse)</span></h2>
-        <img src="themes/tw/images/shared/tools/lighthouse.svg" alt="" width="" height="" />
+        <img src="themes/tw/images/shared/tools/lighthouse.svg" alt="Lighthouse" width="2500" height="2500" />
       </div>
     </section>
 
@@ -2238,7 +2244,7 @@ console.log(result);
 
     <section class="slide">
       <h2>Ландшафт</h2>
-      <a href="https://rsdoctor.dev/">
+      <a href="https://rsdoctor.dev/" rel="noopener noreferrer" target="_blank">
         <img
           class="absolute translate-x-[50%] translate-y-[100%]"
           src="themes/tw/images/shared/tools/vite.svg"
@@ -2247,7 +2253,7 @@ console.log(result);
           height="32"
         />
       </a>
-      <a href="https://rsdoctor.dev/">
+      <a href="https://rsdoctor.dev/" rel="noopener noreferrer" target="_blank">
         <img
           class="next absolute translate-x-[200%] translate-y-[50%]"
           src="themes/tw/images/shared/tools/rollup.svg"
@@ -2265,7 +2271,7 @@ console.log(result);
           height="16"
         />
       </a>
-      <a href="https://rsdoctor.dev/">
+      <a href="https://rsdoctor.dev/" rel="noopener noreferrer" target="_blank">
         <img
           class="next absolute translate-x-[300%] translate-y-[10%]"
           src="themes/tw/images/shared/tools/rolldown.svg"
@@ -2283,7 +2289,7 @@ console.log(result);
           height="16"
         />
       </a>
-      <a href="https://rsdoctor.dev/">
+      <a href="https://rsdoctor.dev/" rel="noopener noreferrer" target="_blank">
         <img
           class="next absolute translate-x-[20%] translate-y-[300%]"
           src="themes/tw/images/shared/tools/rsbuild.svg"
@@ -2292,7 +2298,7 @@ console.log(result);
           height="16"
         />
       </a>
-      <a href="https://rsdoctor.dev/">
+      <a href="https://rsdoctor.dev/" rel="noopener noreferrer" target="_blank">
         <img
           class="next absolute translate-x-[40%] translate-y-[90%]"
           src="themes/tw/images/shared/tools/webpack.svg"
@@ -2310,7 +2316,7 @@ console.log(result);
           height="256"
         />
       </a>
-      <a href="https://rsdoctor.dev/">
+      <a href="https://rsdoctor.dev/" rel="noopener noreferrer" target="_blank">
         <img
           class="next absolute translate-x-[200%] translate-y-[100%]"
           src="themes/tw/images/shared/tools/farm.png"
@@ -2338,7 +2344,7 @@ console.log(result);
     </section>
 
     <section class="slide">
-      <h2>Несколько причин, по которым JavaScript не будет доступен</h2>
+      <h2>Несколько причин, по которым JS не будет доступен</h2>
       <ol>
         <li>Расширение браузера вмешалось в работу сайта</li>
         <li>Нестабильное соединение не загрузило зависимости правильно</li>
@@ -2346,15 +2352,23 @@ console.log(result);
         <li>Сеть Wi-Fi заблокировала определенные CDN</li>
         <li>Пользователь просматривает ваш сайт в поезде, который только что въехал в туннель</li>
         <li>Устройству недостаточно памяти</li>
-        <li>В вашем JavaScript есть ошибка</li>
+        <li>В вашем JS есть ошибка</li>
         <li>Запрос <code>async</code> fetch не был огражден в <code>try</code> <code>catch</code> и не был выполнен</li>
-        <li>У пользователя случайно выключен переключатель JavaScript</li>
-        <li>Пользователь использует переключатель JavaScript для предотвращения загрузки рекламы</li>
-        <li>Блокировщик рекламы заблокировал загрузку вашего JavaScript</li>
-        <li>Пользователь использует <a href="https://en.wikipedia.org/wiki/Opera_Mini">Opera Mini</a></li>
+        <li>У пользователя случайно выключен переключатель JS</li>
+        <li>Пользователь использует переключатель JS для предотвращения загрузки рекламы</li>
+        <li>Блокировщик рекламы заблокировал загрузку вашего JS</li>
+        <li>
+          Пользователь использует
+          <a href="https://en.wikipedia.org/wiki/Opera_Mini" rel="noopener noreferrer" target="_blank">Opera Mini</a>
+        </li>
         <li>
           У пользователя
-          <a href="https://support.google.com/pixelphone/answer/7055392?hl=en-GB">включено сохранение данных</a>
+          <a
+            href="https://support.google.com/pixelphone/answer/7055392?hl=en-GB"
+            rel="noopener noreferrer"
+            target="_blank"
+            >включено сохранение данных</a
+          >
         </li>
         <li>Google Tag Manager добавил мошеннические, мешающие скрипты</li>
         <li>Браузер завис при попытке проанализировать ваш JS-пакет</li>
@@ -2466,6 +2480,11 @@ console.log(result);
         А&nbsp;я&nbsp;на&nbsp;jQuery!
         <img src="themes/tw/images/shared/tools/jquery-book.jpg" alt="JQuery Book" width="147" height="705" />
       </p>
+    </section>
+
+    <section class="slide">
+      <h2>Oracle, it’s time to free JS</h2>
+      <a class="copyright" href="https://javascript.tm/" rel="noopener noreferrer" target="_blank"></a>
     </section>
 
     <section class="slide">
@@ -2824,7 +2843,7 @@ console.log(result);
     </section>
 
     <section class="slide">
-      <img src="themes/tw/images/possibilities/mobile.jpg" alt="" width="" height="" />
+      <img src="themes/tw/images/possibilities/mobile.jpg" alt="Mobile" width="960" height="540" />
       <footer>
         <p>
           Для примера, вспомните, как работают мобильные устройства: вы&nbsp;можете включить режим энергосбережения,
@@ -4127,7 +4146,7 @@ console.log(result);
     </section>
 
     <section class="slide">
-      <h2 class="shout">Щипотка реакта + тайпскрипта</h2>
+      <h2 class="shout">Щипотка реакта × тайпскрипта</h2>
     </section>
 
     <section class="slide">
@@ -4256,7 +4275,10 @@ console.log(result);
 
     <section class="slide">
       <h2>Building Reddit’s Frontend with Vite</h2>
-      <a href="https://www.reddit.com/r/RedditEng/comments/1dhztk8/building_reddits_frontend_with_vite/?rdt=55486"
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        href="https://www.reddit.com/r/RedditEng/comments/1dhztk8/building_reddits_frontend_with_vite/?rdt=55486"
         >Статья</a
       >
       <footer>
@@ -4561,6 +4583,108 @@ something at 60 frames a second for a game and suddenly, you run out of real-
       >
         <source src="themes/tw/video/cases/msc.mp4" type="video/mp4" />
       </video>
+    </section>
+
+    <section class="slide">
+      <h2>Long task (> 50 ms)</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          setTimeout(() => {
+            processNextBatch();
+          }, 0);
+
+          // New approach with scheduler.yield()
+          await scheduler.yield();
+          processNextBatch();
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Традиционный setTimeoutподход к передаче основного потока не имеет гранулярного контроля и правильной
+          расстановки приоритетов. API-интерфейс Scheduler устраняет эти недостатки, предлагая более надежное решение.
+        </p>
+        <p>
+          API планировщика предлагает два основных метода для лучшего контроля: yield()и postTask(). Более простой
+          yield()метод обеспечивает простой способ приостановки выполнения.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <pre class="place">
+        <code class="language-typescript">
+await scheduler.postTask(() => {
+  processNextBatch() },
+  { priority: 'background' }
+);
+        </code>
+      </pre>
+      <footer>
+        <p>Для более сложных сценариев postTask()позволяет использовать планирование на основе приоритетов:</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <pre class="place">
+        <code class="language-typescript">
+          enum TaskPriority {
+            "user-blocking",
+            "user-visible",
+            "background"
+          };
+        </code>
+      </pre>
+      <footer>
+        <p>
+          user-blocking: Задачи, которые блокируют основной поток и&nbsp;требуют немедленного внимания. Например,
+          обработка пользовательского ввода или обновление пользовательского интерфейса.
+        </p>
+        <p>
+          user-visible: Задачи, которые важны, но&nbsp;не&nbsp;так срочны, как user-blockingзадачи. Например, получение
+          данных для следующего экрана.
+        </p>
+        <p>
+          background: Задачи, которые могут выполняться в&nbsp;фоновом режиме, не&nbsp;влияя на&nbsp;работу
+          пользователя. Например, предварительная загрузка активов или выполнение аналитики.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <ul>
+        <li>Управление несколькими задачами с&nbsp;помощью приоритетов</li>
+        <li>Динамические изменения приоритета</li>
+        <li>Отмена задач</li>
+        <li>Поддержка браузеров и&nbsp;резервный шаблон</li>
+      </ul>
+      <footer>
+        <p>Слайд выглядит как список то&nbsp;что входит в&nbsp;платный тариф</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <pre>
+        <code>
+          script type="speculationrules">
+            {
+              "prefetch": [
+                {
+                  "source": "list",
+                  "urls": ["/about", "/contact"]
+                }
+              ]
+            }
+          </script
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>console.log(box.offsetHeight)</h2>
+    </section>
+
+    <section class="slide">
+      <h2>10 100 - гугол</h2>
     </section>
 
     <section class="slide">
