@@ -46,6 +46,10 @@
   video::cue {
     @apply text-base;
   }
+
+  img {
+    @apply relative before:content-["🖼️"] before:absolute before:text-[42px] before:flex before:items-center before:justify-center before:h-[calc(100%_+_10px)] before:w-full before:bg-[theme(colors.light-gray)] before:rounded-sm before:left-0 before:-top-2.5;
+  }
 }
 
 @layer base {
@@ -230,6 +234,8 @@
 
 @layer components {
   .custom-scrollbar {
+    scrollbar-gutter: auto;
+
     &::-webkit-scrollbar {
       @apply w-[18px];
     }
