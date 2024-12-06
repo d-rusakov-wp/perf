@@ -12,7 +12,7 @@
     "publish": "npm run build & shower publish --files '**' --files '!{docs,node_modules}{,/**}' --files '!*.{md,toml,json,yml,lockb,config.js,config.ts}'",
     "tw:watch": "tailwindcss -i ./themes/tw/styles/styles.css -o ./bundled/styles.css --watch",
     "tw:build": "tailwindcss -i ./themes/tw/styles/styles.css -o ./bundled/styles.css --minify",
-    "find-unused-images": "node ./themes/tw/packages/search-unused-images.js"
+    "search-unused-images": "node ./themes/tw/packages/search-unused-images.js"
   },
   "dependencies": {
     "@shower/core": "^3.3.0",
@@ -27,7 +27,6 @@
     "htmlparser2": "9.1.0",
     "lefthook": "1.8.5",
     "path-exists-cli": "2.0.0",
-    "picocolors": "1.1.1",
     "postcss": "8.4.49",
     "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "0.6.9",

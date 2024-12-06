@@ -41,8 +41,9 @@ class Scale extends HTMLElement {
           justify-content: flex-end;
           padding-right: 5px;
           border-radius: 0.125rem;
-          font-size: 12px;
-          content: '${this.getAttribute("winner") ? "✅" : ""}';
+          line-height: 1;
+          font-size: 16px;
+          content: '${this.getAttribute("winner") ? "🏆" : ""}';
           width: ${this.getAttribute("percentage")}%;
           background: #b3441e;
           background: repeating-linear-gradient(-45deg, #b3441e, #b3441e 5px, #0000 5px, #0000 10px);

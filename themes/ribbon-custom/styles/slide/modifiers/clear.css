@@ -1,9 +1,3 @@
-/* Progress Off */
-
-.slide.clear.active ~ .progress {
-  display: none;
-}
-
 /* Number Off */
 
 .slide.clear::after {

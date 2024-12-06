@@ -10,6 +10,9 @@ module.exports = {
       "light-gray": "#98a4b0",
       red: "#f54336",
     },
+    content: {
+      placeholder: "'🖼️'",
+    },
     fontFamily: {
       arsenal: "Arsenal, sans-serif",
       system: [

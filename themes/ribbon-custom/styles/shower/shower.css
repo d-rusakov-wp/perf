@@ -19,8 +19,7 @@
   --color-fill: rgb(88 90 94 / 10%);
   --color-line: rgb(88 90 94 / 50%);
 
-  --ribbon-size: 40px;
-  --progress-size: 10px;
+  --ribbon-size: 48px;
 
   -webkit-text-size-adjust: none;
   -moz-text-size-adjust: none;
@@ -30,6 +29,6 @@
   color: black;
   counter-reset: slide;
   font:
-    25px/2 "PT Sans",
+    25px/2 "Arsenal",
     sans-serif;
 }
