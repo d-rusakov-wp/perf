@@ -48,9 +48,6 @@
     "index.html",
     "README.md"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/d-rusakov-wp/perf.git"
