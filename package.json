@@ -6,7 +6,7 @@
   "license": "MIT",
   "homepage": "https://github.com/d-rusakov-wp/perf",
   "scripts": {
-    "dev": "shower serve & npm run tw:watch",
+    "dev": "kill-port 8080 & shower serve & npm run tw:watch",
     "format": "prettier . --write",
     "build": "npm run tw:build",
     "publish": "npm run build & shower publish --files '**' --files '!{docs,node_modules}{,/**}' --files '!*.{md,toml,json,yml,lockb,config.js,config.ts}'",
@@ -25,6 +25,7 @@
     "autoprefixer": "^10.4.20",
     "cssnano": "^7.0.6",
     "htmlparser2": "9.1.0",
+    "kill-port": "2.0.1",
     "lefthook": "1.9.0",
     "path-exists-cli": "2.0.0",
     "postcss": "8.4.49",
