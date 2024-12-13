@@ -1,0 +1,4946 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+    <meta name="description" content="Доклад о производительности" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#2c3c44" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Perf" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Семь раз отмерь, один раз оптимизируй" />
+    <meta property="og:description" content="Доклад о производительности" />
+    <meta property="og:url" content="https://d-rusakov-wp.github.io/perf" />
+    <meta property="og:image" content="themes/tw/images/cover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="675" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <title>Семь раз отмерь, один раз оптимизируй</title>
+
+    <style>
+      .shower {
+        --slide-ratio: calc(16 / 9);
+      }
+    </style>
+
+    <link rel="manifest" href="manifest.json" />
+    <link rel="canonical" href="https://d-rusakov-wp.github.io/perf" />
+    <link rel="icon" type="image/png" sizes="96x96" href="themes/tw/images/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="themes/tw/images/favicon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="themes/tw/images/favicon-512x512.png" />
+    <link rel="shortcut icon" href="themes/tw/images/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="themes/tw/images/apple-touch-icon.png" />
+
+    <link
+      rel="preload"
+      href="themes/tw/fonts/Arsenal/Regular.woff"
+      as="font"
+      type="font/woff"
+      crossorigin="anonymous"
+    />
+    <link rel="preload" href="themes/tw/fonts/Arsenal/Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="preconnect" href="//fonts.googleapis.com" crossorigin />
+
+    <link rel="stylesheet" href="themes/ribbon-custom/styles/styles.css" />
+    <link rel="stylesheet" href="themes/tw/packages/highlight/hybrid.min.css" />
+    <link rel="stylesheet" href="bundled/styles.css" />
+  </head>
+  <body class="shower list custom-scrollbar" role="application">
+    <header class="caption">
+      <h1 class="text-white">Семь раз отмерь, один раз оптимизируй</h1>
+    </header>
+
+    <section class="slide clear">
+      <div class="flex h-full flex-col items-center justify-end">
+        <img src="themes/tw/images/logo.png" width="250" height="250" alt="Изображение" />
+        <div class="text-center">
+          <h2 class="!my-[20px] !text-5xl">Семь раз отмерь,<br />один раз оптимизируй</h2>
+          <p class="text-md italic leading-6 !text-light-gray">Денис Русаков</p>
+        </div>
+      </div>
+      <footer>
+        <p>Лонгрид.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">O&rsquo;Reilly</h2>
+      <div class="mt-[70px] flex flex-col items-center justify-center opacity-90">
+        <div class="-mx-8 flex items-start justify-center gap-8">
+          <img
+            class="rounded-sm"
+            src="themes/tw/images/preview/o-reilly/1.jpg"
+            width="200"
+            height="200"
+            alt="Изображение"
+          />
+          <img
+            class="rounded-sm"
+            src="themes/tw/images/preview/o-reilly/2.jpg"
+            width="200"
+            height="200"
+            alt="Изображение"
+          />
+          <img
+            class="rounded-sm"
+            src="themes/tw/images/preview/o-reilly/3.jpg"
+            width="200"
+            height="200"
+            alt="Изображение"
+          />
+        </div>
+        <img class="mt-8" src="themes/tw/images/preview/o-reilly/logo.svg" width="400" height="200" alt="Изображение" />
+        <a target="_blank" rel="noopener noreferrer" class="copyright" href="https://www.oreilly.com">O&rsquo;Reilly</a>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Птица</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/preview/bird.jpg"
+        width="536"
+        height="490"
+        alt="Изображение"
+      />
+      <footer>
+        <p>Не&nbsp;выдумка как и&nbsp;производительность вашего проекта.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Цель доклада</h2>
+      <img
+        class="next list-hidden absolute bottom-0 right-0"
+        src="themes/tw/pictures/memes/pizza.jpg"
+        alt="Изображение"
+        width="180"
+        height="223"
+      />
+      <footer>
+        <p>Нет уникальной отмычки.</p>
+        <p>Избежать загрузки лишних ресурсов.</p>
+        <p>Уменьшить размер ресурсов.</p>
+        <p>Уменьшить время получения ресурсов.</p>
+        <p>Отложить загрузку второстепенных ресурсов.</p>
+        <p>Избегать блокировки основного потока</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Есть&nbsp;ли сейчас проблема?</h2>
+      <span
+        class="next absolute left-0 top-[65%] w-full -translate-y-2/4 text-center font-arsenal text-7xl font-bold leading-none text-light-gray"
+        >ведь таски закрываются</span
+      >
+      <footer>
+        <p>Знать проблему недостаточно&nbsp;&mdash; нужно также глубоко понимать для кого вы&nbsp;её&nbsp;решаете.</p>
+        <p>Ускорение сайта уменьшают расходы на бэкенд.</p>
+        <p>Необходимо по ТЗ.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Мем</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/the-twilight-zone/1.jpg"
+        width="582"
+        height="722"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Мем</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/the-twilight-zone/2.jpg"
+        width="782"
+        height="720"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Мем</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/the-twilight-zone/3.jpg"
+        width="782"
+        height="628"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Мем</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/the-twilight-zone/4.jpg"
+        width="582"
+        height="628"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide group">
+      <h2>Какой план? (summary)</h2>
+      <img
+        class="next list-hidden float-right translate-x-[70px] translate-y-[200px] group-has-[&.visited]:hidden"
+        src="themes/tw/pictures/memes/plan.jpg"
+        width="300"
+        height="183"
+        alt="Изображение"
+        aria-hidden="true"
+      />
+      <ul class="toc">
+        <li class="toc__list-item next" id="first-item">
+          <a class="toc__list-link" href="/?full=11">
+            <span class="toc__name">Базовые принципы</span>
+            <span class="page">11</span>
+          </a>
+        </li>
+        <li class="toc__list-item next">
+          <a class="toc__list-link" href="/?full=11">
+            <span class="toc__name">Возможности</span>
+            <span class="page">22</span>
+          </a>
+        </li>
+        <li class="toc__list-item next">
+          <a class="toc__list-link" href="/?full=11">
+            <span class="toc__name">Набор приемов/советов</span>
+            <span class="page">33</span>
+          </a>
+        </li>
+        <li class="toc__list-item next">
+          <a class="toc__list-link" href="/?full=11">
+            <span class="toc__name">Кейсы</span>
+            <span class="page">44</span>
+          </a>
+        </li>
+        <li class="toc__list-item next">
+          <a class="toc__list-link" href="/?full=11">
+            <span class="toc__name">Выводы</span>
+            <span class="page">55</span>
+          </a>
+        </li>
+      </ul>
+      <footer>
+        <p>
+          Сэмплирование данных&nbsp;&mdash; процесс, при котором анализируют небольшую часть данных, чтобы получить
+          представление о&nbsp;характеристиках и&nbsp;параметрах всей собранной информации.
+        </p>
+        <p>Инсайт.</p>
+      </footer>
+    </section>
+
+    <section class="slide clear">
+      <h2 class="cover left-0 mt-[24px] -translate-y-[50%] pl-[120px] text-left group-has-[&.visited]:hidden">
+        <span class="text-light-gray">Акт 1</span>
+        <br />
+        <span class="motion-duration-2000">Базовые принципы (tl;dr)</span>
+      </h2>
+    </section>
+
+    <section class="slide group">
+      <h2 class="shout left-[50%] !m-auto !ml-[120px] !text-left">
+        <span class="block text-5xl text-light-gray">Что такое</span>
+        <span class="block text-7xl group-has-[#perf-need.active]:hidden" id="perf">производительность?</span>
+        <span class="next block" id="perf-need">веб-производительность?</span>
+      </h2>
+      <!--      <p class="note">perfo<span class="text-orange">R</span>mance</p>-->
+      <a class="copyright" rel="noopener noreferrer" target="_blank" href="https://doka.guide/js/performance"
+        >Производительность</a
+      >
+      <footer>
+        <p>
+          Производительность в&nbsp;web&nbsp;&mdash; объективные измерения и&nbsp;пользовательские ощущения, связанные
+          с&nbsp;загрузкой и&nbsp;работой приложения. Производительность&nbsp;&mdash; о&nbsp;том, как долго сайт
+          грузится, становится интерактивным и&nbsp;отзывчивым, о&nbsp;том, как плавно происходит взаимодействие
+          с&nbsp;контентом.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide clear">
+      <h2 class="sr-only">Цифры</h2>
+      <img
+        class="cover !opacity-[30%]"
+        src="themes/tw/images/basics/numbers.jpg"
+        width="1920"
+        height="1080"
+        style="opacity: 50%"
+        alt="Изображение"
+      />
+      <footer>
+        <p>Будет немного цифр.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Мы&nbsp;разные</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/preview/heads.jpg"
+        alt="Изображение"
+        width="581"
+        height="1126"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">UX&nbsp;core</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/ux-core.jpg"
+        alt="Изображение"
+        width="913"
+        height="914"
+      />
+      <a class="copyright" href="https://keepsimple.io/ru/uxcore" target="_blank" rel="noopener noreferrer"
+        >UX&nbsp;Core</a
+      >
+      <footer>
+        <p>Производительность влияет на&nbsp;поведение пользователей.</p>
+        <p>
+          Лабораторные: Имитируются в&nbsp;лабораторных условиях + Зависят от&nbsp;среды проверки + Результаты
+          от&nbsp;проверки к&nbsp;проверке могут отличаться.
+        </p>
+        <p>
+          Полевые: Собираются с&nbsp;реальных пользователей + Отличаются для разных пользователей + Необходимо
+          достаточное количество для анализа.
+        </p>
+        <p>
+          Длительная задача&nbsp;&mdash; задача, выполнение которой занимает более 50&nbsp;мс (которые монополизируют
+          основной поток, что приводит к&nbsp;неотзывчивости пользовательских интерфейсов).
+        </p>
+        <p>
+          Critical Rendering Path&nbsp;&mdash; последовательность шагов, которые выполняет браузер, когда преобразуется
+          HTML, CSS и&nbsp;JS в&nbsp;пиксели, которые вы&nbsp;видите на&nbsp;экране (DOM, CSSOM, Render tree, layout)
+        </p>
+        <p>
+          Бюджет производительности&nbsp;&mdash; лимит для предотвращения регрессий. Этот бюджет может быть применён
+          к&nbsp;файлам, типам файлов, всем ресурсам приложения, определённым общим показателям (например, Время
+          до&nbsp;интерактивности) пользовательским показателям (например, Время до&nbsp;главного элемента) или
+          к&nbsp;пороговым значениям к&nbsp;определённым точкам во&nbsp;времени.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Цитата</h2>
+      <figure class="place w-[55%]">
+        <blockquote class="flex items-start">
+          <p>Если вы&nbsp;не&nbsp;можете что-то измерить, значит, вы&nbsp;не&nbsp;можете это исправить</p>
+        </blockquote>
+        <figcaption>Уильям Томсон</figcaption>
+      </figure>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Цитата</h2>
+      <figure class="place w-[55%]">
+        <blockquote class="flex items-start">
+          <p>Преждевременная оптимизация&nbsp;&mdash; корень всех бед</p>
+        </blockquote>
+        <figcaption>Дональд Кнут</figcaption>
+      </figure>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Лоадер</h2>
+      <div class="flex h-full items-center justify-center">
+        <div class="loader animate-wave before:content-['Загрузка...']"></div>
+      </div>
+      <footer>
+        <p>
+          Что такое тормоза? (lag) Непредсказуемые задержки в&nbsp;обратной связи в&nbsp;интерфейсе: рывки
+          и&nbsp;замирания.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide" id="cube">
+      <h2 class="sr-only">Видео</h2>
+      <video
+        muted
+        data-loop
+        disablepictureinpicture
+        preload="metadata"
+        width="400"
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/basics/cube.jpg"
+      >
+        <source src="themes/tw/video/basics/cube.mp4" type="video/mp4" />
+      </video>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Скорость загрузки</h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Видео</h2>
+      <video
+        muted
+        disablepictureinpicture
+        preload="metadata"
+        width="700"
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/basics/apple.jpg"
+      >
+        <source src="themes/tw/video/basics/apple.mp4" type="video/mp4" />
+      </video>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Мем</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/devs.jpg"
+        alt="Изображение"
+        width="700"
+        height="500"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Debounce</h2>
+      <img
+        class="absolute m-auto w-[150px] translate-y-[150px] rounded-sm shadow-[0_20px_50px_rgb(0_0_0_/_30%)]"
+        src="themes/tw/images/possibilities/npm/debounce.jpg"
+        alt="Изображение"
+        width="300"
+        height="200"
+      />
+      <img
+        class="next absolute m-auto w-[250px] translate-x-[250px] translate-y-[120px] rounded-sm shadow-[0_20px_50px_rgb(0_0_0_/_30%)]"
+        src="themes/tw/images/possibilities/npm/throttle.jpg"
+        alt="Изображение"
+        width="300"
+        height="200"
+      />
+      <img
+        class="next absolute m-auto w-[200px] translate-x-[150px] translate-y-[280px] rounded-sm shadow-[0_20px_50px_rgb(0_0_0_/_30%)]"
+        src="themes/tw/images/possibilities/npm/critical.jpg"
+        alt="Изображение"
+        width="300"
+        height="200"
+      />
+      <img
+        class="next absolute m-auto w-[300px] translate-x-[480px] translate-y-[150px] rounded-sm shadow-[0_20px_50px_rgb(0_0_0_/_30%)]"
+        src="themes/tw/images/possibilities/npm/perfume.jpg"
+        alt="Изображение"
+        width="300"
+        height="200"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>Чертовски хорошо</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/cooper.jpg"
+        alt="Изображение"
+        width="600"
+        height="200"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Median page weight</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/web-almanac/median-page-weight-by-content-type.jpg"
+        width="789"
+        height="316"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Неиспользованный JS</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/web-almanac/unused-js.jpg"
+        width="789"
+        height="316"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Netflix 2002</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/preview/netflix/2002.jpg"
+        alt="Изображение"
+        width="762"
+        height="900"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Netflix 2010</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/preview/netflix/2010.jpg"
+        alt="Изображение"
+        width="780"
+        height="900"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Netflix 2017</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/preview/netflix/2017.jpg"
+        alt="Изображение"
+        width="701"
+        height="900"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Netflix 2024</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/preview/netflix/2024.jpg"
+        alt="Netflix 2024"
+        width="750"
+        height="900"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>Откуда?</h2>
+      <ul>
+        <li class="next">
+          Дизайнер может включить множество фотографий/шрифтов в&nbsp;качестве части стратегии дизайна
+        </li>
+        <li class="next">Разработчик может использовать фреймворки, которые не&nbsp;являются абсолютно необходимыми</li>
+        <li class="next">Владелец продукта может потребовать добавить виджеты, чтобы повысить вовлеченность бренда</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Мем</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/refactoring.jpg"
+        alt="Изображение"
+        width="500"
+        height="795"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">
+        <span class="text-orange">J</span>ust <span class="text-orange">N</span>oticeable
+        <span class="text-orange">D</span>ifference
+      </h2>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>
+          Заметно <span class="next"><span class="text-orange">!==</span> значимо</span>
+        </h2>
+      </div>
+      <footer>
+        <p>
+          Ощущаемая пользователем &laquo;производительность&raquo;&nbsp;&mdash; одна из&nbsp;единственных видов
+          производительностей, которая имеет значение. Пользователи взаимодействуют с&nbsp;системой с&nbsp;помощью ввода
+          каких-то данных: прикосновений, движения и&nbsp;речи. В&nbsp;ответ, они получают реакцию, основанную
+          на&nbsp;зрительном, тактильном или слуховом аппаратах. Производительность&nbsp;&mdash; качество того, как
+          система реагирует на&nbsp;действия пользователя.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <div class="flex h-full items-center justify-center">
+        <h2>Что такое скорость загрузки?</h2>
+        <p class="next">
+          Скорость загрузки&nbsp;&mdash; совокупность факторов, которые влияют на&nbsp;то,
+          <span class="text-orange">воспринимает</span>&nbsp;ли пользователь загрузку страницы как быструю
+        </p>
+      </div>
+      <a href="https://web.dev/what-is-speed" rel="noopener noreferrer" class="copyright" target="_blank"
+        >Что такое скорость?</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">
+        <span>Стресс</span>
+        <br />
+        <span class="next text-[62px] text-light-gray"
+          >задержки в&nbsp;работе сайта вызывают такой&nbsp;же стресс, как просмотр фильма ужасов</span
+        >
+      </h2>
+      <a href="https://www.neuronsinc.com/cases/ericsson" class="copyright" target="_blank" rel="noopener noreferrer"
+        >The stress of&nbsp;streaming delays</a
+      >
+      <footer>
+        <p>Отзывчивость важна просто потому, что пользователи теряются и&nbsp;злятся, когда их&nbsp;игнорируют.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Отзывчивость</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/battery.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/battery.gif" alt="Изображение" width="52" height="52" />
+        </picture>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Эффективность</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/battery.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/battery.gif" alt="Изображение" width="52" height="52" />
+        </picture>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2 class="flex items-center justify-center">
+          <span>Web Vitals</span>
+          <span>&nbsp;-&gt; Core Web Vitals</span>
+        </h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/lightning.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/lightning.gif" alt="Изображение" width="52" height="52" />
+        </picture>
+      </div>
+      <a href="https://web.dev" class="copyright" target="_blank" rel="noopener noreferrer">Web Dev</a>
+      <footer>
+        <p>Достижениие 100 баллов сложно и важно лишь войти в зеленую зону от 80 баллов.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Шаблоны веб-показателей</h2>
+      <a
+        class="copyright"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://web.dev/patterns/web-vitals-patterns?hl=ru"
+        >https://web.dev/patterns/web-vitals-patterns?hl=ru</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2>Метрики Core Web Vitals</h2>
+      <div class="columns two">
+        <ul>
+          <li class="next"><span class="text-orange">LCP</span></li>
+          <li class="next">
+            <span class="text-orange"> CLS </span>
+          </li>
+          <li class="next">
+            <span class="text-orange">INP</span>
+          </li>
+          <li class="next"><span class="text-orange">FCP</span></li>
+        </ul>
+        <ul>
+          <li class="next">TTFB</li>
+          <li class="next">SI</li>
+          <li class="next">FP</li>
+          <li class="next"><s>FID</s>&nbsp;TBT</li>
+          <li class="next">TTI</li>
+        </ul>
+      </div>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://www.debugbear.com/test/core-web-vitals"
+        >Test core-web-vitals</a
+      >
+      <footer>
+        <p>LCP&nbsp;&mdash; время, необходимое для загрузки и&nbsp;отображения основного содержимого страницы.</p>
+        <p>
+          CLS&nbsp;&mdash; накопительный сдвиг раскладки Измеряет визуальную стабильность, чтобы избежать неожиданного
+          смещения макета
+        </p>
+        <p>TTFB&nbsp;&mdash; время, необходимое для получения первого байта страницы.</p>
+        <p>
+          FF&nbsp;&mdash; Задержка первого входа Время с&nbsp;момента взаимодействия пользователя со&nbsp;страницей
+          до&nbsp;момента, когда обработчики событий смогут запуститься.
+        </p>
+        <p>FCP&nbsp;&mdash; время, необходимое браузеру для отображения первой части контента после навигации.</p>
+        <p>
+          TTI&nbsp;&mdash; время с&nbsp;момента начала загрузки страницы до&nbsp;момента, когда она начинает быстро
+          и&nbsp;надежно реагировать на&nbsp;действия пользователя.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Влияние Core Web Vitals</h2>
+      <ul>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://aliexpress.ru">AliExpress</a>
+          улучшил CLS в&nbsp;10&nbsp;раз, а&nbsp;LCP в&nbsp;2&nbsp;раза, что привело к&nbsp;снижению показателя отказов
+          на&nbsp;15%
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://onlineconvertfree.com">Onlineconvertfree</a>
+          улучшил CLS, LCP, INP, что привело к&nbsp;большему кол-ву пользователей
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://2pdf.com">2pdf</a> улучшил CLS, LCP, INP, что
+          привело к&nbsp;большему кол-ву пользователей
+        </li>
+      </ul>
+      <a href="https://web.dev/vitals-business-impact" class="copyright" target="_blank" rel="noopener noreferrer"
+        >The business impact of&nbsp;Core Web Vitals</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2>Продуктовые метрики и воронки пользователей</h2>
+    </section>
+
+    <section class="slide">
+      <h2>Lazy middlewar'ы</h2>
+      <ul>
+        <li>Выносим асинхронные функции в отдельные модули</li>
+        <li>Обращаемся к ним через ленивые импорты</li>
+        <li>Настраиваем предзагрузку важных частей</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Влияние</h2>
+      <ul>
+        <li class="next">
+          Для
+          <a
+            href="https://www.gigaspaces.com/blog/amazon-found-every-100ms-of-latency-cost-them-1-in-sales"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Amazon</a
+          >
+          каждые 100мс задержки обходятся в&nbsp;1% продаж.
+        </li>
+        <li class="next">
+          <a href="https://www.walmart.com" target="_blank" rel="noopener noreferrer"
+            >walmart: 1&nbsp;секунда ускорения + 2%&nbsp;конверсии от&nbsp;400 млрд</a
+          >
+        </li>
+        <li class="next">
+          AliExpress сократил время загрузки на&nbsp;36%, увеличил количество заказов на&nbsp;10,5% и&nbsp;увеличил
+          конверсию для новых клиентов на&nbsp;27%.
+        </li>
+      </ul>
+      <a href="https://www.youtube.com/watch?v=OqbCNprhrlA" class="copyright">Видео</a>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Браузерный движок</h2>
+      <p class="place w-[70%]">
+        <b>Браузерный движок (layout engine)</b>&nbsp;&mdash; специализированная программа,
+        <span class="text-orange">обрабатывающая</span> и&nbsp;<span class="text-orange">преобразующая</span> содержимое
+        страниц в&nbsp;интерактивное изображение на&nbsp;экране
+      </p>
+      <a class="copyright" href="https://yellowlab.tools" rel="noopener noreferrer" target="_blank"
+        >https://yellowlab.tools/</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Page Speed <span class="next">vs&nbsp;Счётчики</span></h2>
+      <a class="copyright" href="https://pagespeed.web.dev" target="_blank" rel="noopener noreferrer">PageSpeed</a>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Типовой проект</h2>
+      <img
+        class="place rounded-sm"
+        style="opacity: 90%"
+        src="themes/tw/images/possibilities/project.jpg"
+        width="821"
+        height="658"
+        alt="Изображение"
+      />
+      <footer>
+        <p>Пользователи ожидают производительность в&nbsp;качестве основного свойства используемого&nbsp;ПО</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Какие движки существуют?</h2>
+      <ul>
+        <li class="next flex items-center">
+          V8
+          <a
+            class="next ml-4"
+            href="https://www.google.com/intl/ru_ru/chrome"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="themes/tw/images/shared/browsers/chrome.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a
+            class="next ml-4"
+            href="https://www.google.com/intl/ru_ru/chrome"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="themes/tw/images/shared/browsers/chromium.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a
+            class="next ml-4"
+            href="https://www.google.com/intl/ru_ru/chrome"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="themes/tw/images/shared/browsers/chrome-canary.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a href="https://arc.net" class="next ml-4" target="_blank" rel="noopener noreferrer">
+            <img src="themes/tw/images/shared/browsers/arc.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a href="https://nodejs.org/en" class="next ml-4" target="_blank" rel="noopener noreferrer">
+            <img src="themes/tw/images/shared/tools/node-js.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a href="https://deno.com" class="next ml-4" target="_blank" rel="noopener noreferrer">
+            <img src="themes/tw/images/shared/tools/deno.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a href="https://www.opera.com/ru" class="next ml-4" target="_blank" rel="noopener noreferrer">
+            <img src="themes/tw/images/shared/browsers/opera.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a href="https://vivaldi.com/ru" class="next ml-4" target="_blank" rel="noopener noreferrer">
+            <img src="themes/tw/images/shared/browsers/vivaldi.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a href="https://www.mozilla.org/ru/firefox" class="next ml-4" target="_blank" rel="noopener noreferrer">
+            <img src="themes/tw/images/shared/browsers/yandex.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a href="https://brave.com" target="_blank" rel="noopener noreferrer">
+            <img
+              class="next ml-4"
+              src="themes/tw/images/shared/browsers/brave.svg"
+              alt="Изображение"
+              width="52"
+              height="52"
+            />
+          </a>
+        </li>
+        <li class="next flex items-center">
+          SpiderMonkey
+          <a
+            href="https://www.mozilla.org/ru/firefox"
+            class="next ml-4 group-has-[&.visited]:hidden"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="themes/tw/images/shared/browsers/firefox-old.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a href="https://www.mozilla.org/ru/firefox" class="next ml-4" target="_blank" rel="noopener noreferrer">
+            <img src="themes/tw/images/shared/browsers/firefox.svg" alt="Изображение" width="52" height="52" />
+          </a>
+        </li>
+        <li class="next flex items-center">
+          Chakra&nbsp;/ ChakraCore
+          <a
+            class="next ml-4"
+            href="https://www.microsoft.com/ru-ru/edge/download?form=MA13FW"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="themes/tw/images/shared/browsers/edge.svg" alt="Изображение" width="52" height="52" />
+          </a>
+        </li>
+        <li class="next flex items-center">
+          JavaScriptCore
+          <a href="" class="next ml-4" target="_blank" rel="noopener noreferrer">
+            <img src="themes/tw/images/shared/browsers/safari.svg" alt="Изображение" width="52" height="52" />
+          </a>
+          <a href="" target="_blank" rel="noopener noreferrer">
+            <img
+              class="next ml-4"
+              src="themes/tw/images/shared/tools/bun.svg"
+              alt="Изображение"
+              width="52"
+              height="52"
+            />
+          </a>
+        </li>
+        <li class="next flex items-center">
+          и&nbsp;другие
+          <a href="https://sigmaos.com" target="_blank" rel="noopener noreferrer">
+            <img
+              class="next ml-4"
+              src="themes/tw/images/shared/browsers/sigma.svg"
+              alt="Изображение"
+              width="52"
+              height="52"
+            />
+          </a>
+        </li>
+      </ul>
+      <a
+        class="copyright"
+        rel="noopener noreferrer"
+        target="_blank"
+        href="https://bun.sh/blog/how-bun-supports-v8-apis-without-using-v8-part-1"
+        >How-bun-supports-v8-apis-without-using-v8-part-1</a
+      >
+      <footer>
+        <p>Bun&nbsp;&mdash; уже не&nbsp;экзотика.</p>
+        <p>
+          Движок&nbsp;&mdash; ядро любого браузера. Он&nbsp;представлен в&nbsp;виде скрипта и&nbsp;отвечает
+          за&nbsp;преобразование кода Web-продукта в&nbsp;динамическое изображение, которое отображается на&nbsp;экране
+          устройства пользователя. Различия в&nbsp;движках базируются на&nbsp;том, что они имеют разные алгоритмы
+          обработки кода.
+        </p>
+        <p>
+          В&nbsp;JS имеется ограниченная информация о&nbsp;типах во&nbsp;время компиляции: типы могут быть изменены
+          во&nbsp;время выполнения, поэтому естественно ожидать, что рассуждать о&nbsp;типах&nbsp;JS во&nbsp;время
+          компиляции будет затратно. Это может заставить вас задаться вопросом, как производительность JS может
+          когда-либо приблизиться к&nbsp;C++.&nbsp;Однако в&nbsp;V8&nbsp;есть скрытые типы, созданные внутри объектов
+          во&nbsp;время выполнения; объекты с&nbsp;одним и&nbsp;тем&nbsp;же скрытым классом могут затем использовать
+          один и&nbsp;тот&nbsp;же оптимизированный сгенерированный код.
+        </p>
+        <p>
+          Производительность движков может существенно отличаться. Например, однажды на&nbsp;проекте у&nbsp;нас возникла
+          ситуация: приложение с&nbsp;интерактивными элементами и&nbsp;динамической загрузкой контента прекрасно
+          работало в&nbsp;Chrome (Blink), но&nbsp;в&nbsp;Firefox (Gecko) мы&nbsp;заметили явные задержки
+          в&nbsp;рендеринге. В&nbsp;итоге пришлось проводить дополнительную оптимизацию, чтобы приложение работало
+          плавно во&nbsp;всех целевых браузерах.&nbsp;2. Кросс-браузерная совместимость и&nbsp;обработка HTML/CSS/JS.
+          Движки обрабатывают HTML, CSS и&nbsp;JS по-разному. Это может привести к&nbsp;тому, что одно и&nbsp;то&nbsp;же
+          web-приложение будет работать иначе в&nbsp;разных браузерах. Например, анимации, макеты или скрипты могут
+          отображаться корректно в&nbsp;Chrome, но&nbsp;возникнут проблемы в&nbsp;Safari или Firefox. Знание
+          особенностей каждого движка позволяет выявить такие различия на&nbsp;ранних этапах тестирования.
+        </p>
+        <p>
+          О&nbsp;двух компиляторах, которые использовались в&nbsp;V8&nbsp;Внутреннее устройство V8&nbsp;изменилось
+          с&nbsp;выходом версии 5.9, которая появилась совсем недавно. До&nbsp;этого&nbsp;же он&nbsp;использовал два
+          компилятора: full-codegen&nbsp;&mdash; простой и&nbsp;очень быстрый компилятор, который выдаёт сравнительно
+          медленный машинный код. Crankshaft&nbsp;&mdash; более сложный оптимизирующий JIT-компилятор, который
+          генерирует хорошо оптимизированный код. Внутри движка используются несколько потоков: Главный поток, который
+          занимается тем, что от&nbsp;него можно ожидать: читает исходный JS-код, компилирует его и&nbsp;выполняет.
+          Поток компиляции, который занимается оптимизацией кода в&nbsp;то&nbsp;время, когда выполняется главный поток.
+          Поток профилировщика, который сообщает системе о&nbsp;том, в&nbsp;каких методах программа тратит больше всего
+          времени, как результат, Crankshaft может эти методы оптимизировать.
+        </p>
+        <p>
+          При первом исполнении JS-кода V8&nbsp;задействует компилятор full-codegen, который напрямую, без каких-либо
+          дополнительных трансформаций, транслирует разобранный им&nbsp;JS-код в&nbsp;машинный код. Позволяет очень
+          быстро приступить к&nbsp;выполнению машинного кода. Обратите внимание на&nbsp;то, что V8&nbsp;не использует
+          промежуточное представление программы в&nbsp;виде байт-кода, таким образом, устраняя необходимость
+          в&nbsp;интерпретаторе. После того, как код какое-то время поработает, поток профилировщика соберёт достаточно
+          данных для того, чтобы система могла понять, какие методы нужно оптимизировать. Далее, в&nbsp;другом потоке,
+          начинается оптимизация с&nbsp;помощью Crankshaft. Он&nbsp;преобразует абстрактное синтаксическое дерево JS
+          в&nbsp;высокоуровневое представление, использующее модель единственного статического присваивания (static
+          single-assignment, SSA). Представление называется Hydrogen.
+        </p>
+        <p>
+          В&nbsp;движке V8&nbsp;нет интерпретаторов, но&nbsp;существует 2&nbsp;типа компиляторов&nbsp;&mdash; общий
+          и&nbsp;оптимизирующий. Привод к&nbsp;тому, что&nbsp;JS всегда компилируется и&nbsp;запускается так&nbsp;же как
+          и&nbsp;машинный код. Означает&nbsp;ли это, что код работает быстро? Нет, Сама по&nbsp;себе компиляция
+          не&nbsp;ускоряет работу кода. Она позволяет избежать накладных расходов, вызванных работой интерпретатора,
+          но&nbsp;неоптимизированный код будет работать медленно.
+        </p>
+        <p>
+          Время выполнения&nbsp;&mdash; время, необходимое для выполнения ранее извлеченных, проанализированных
+          и&nbsp;скомпилированных данных.
+        </p>
+        <p>
+          Начало интерактивности&nbsp;&mdash; например, когда пользователю становится доступна возможность нажать
+          кнопку, а&nbsp;приложение может ему ответить.
+        </p>
+        <p>
+          Гидратация&nbsp;&mdash; присоединение обработчиков к&nbsp;узлу DOM, содержимое HTML которого было отрисовано
+          сервером, что делает компонент интерактивным.
+        </p>
+        <p>Бездействие&nbsp;&mdash; состояние браузера, когда он&nbsp;не&nbsp;выполняет никаких действий.</p>
+        <p>Время загрузки&nbsp;&mdash; время, необходимое для извлечения данных с&nbsp;сервера.</p>
+        <p>
+          Основной поток&nbsp;&mdash; поток, в&nbsp;котором браузер выполняет весь&nbsp;JS, выполняет компоновку,
+          переформатирование и&nbsp;сборку мусора.
+        </p>
+        <p>
+          Синтаксический анализ&nbsp;&mdash; преобразование исходного HTML-кода в&nbsp;узлы DOM и&nbsp;генерация AST.
+        </p>
+        <p>Обработка&nbsp;&mdash; парсинг, компиляция и&nbsp;выполнение ранее извлеченных данных.</p>
+        <p>Время обработки&nbsp;&mdash; время, необходимое для парсинга и&nbsp;компиляции ранее извлеченных данных.</p>
+      </footer>
+    </section>
+
+    <section class="slide relative">
+      <h2 class="sr-only">Codeium 1</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/codeium/1.jpg"
+        width="989"
+        height="316"
+        alt="Изображение"
+      />
+      <img
+        class="next translate-x-[610px] translate-y-[340px] rounded-sm"
+        src="themes/tw/pictures/memes/Ilon.jpg"
+        width="300"
+        height="150"
+        alt="Изображение"
+      />
+      <a class="copyright" href="https://codeium.com/live/general" target="_blank" rel="noopener noreferrer">codeium</a>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Codeium 2</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/codeium/2.jpg"
+        width="989"
+        height="316"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2 class="!m-0">Как устроен <i>V8</i> ?</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/eyes.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/eyes.gif" alt="Изображение" width="52" height="52" aria-hidden="true" />
+        </picture>
+        <a class="copyright" href="https://v8.dev/blog/10-years" target="_blank" rel="noopener noreferrer">V8</a>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Works</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/works/shared.jpg"
+        alt="Изображение"
+        width="706"
+        height="1448"
+      />
+      <a class="copyright" target="_blank" rel="noopener noreferrer" href="https://addyosmani.com">Addy Osmani</a>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Works</h2>
+      <div class="columns three">
+        .js .wasm
+        <img class="m-auto" src="themes/tw/images/basics/v8/ignition.svg" alt="Изображение" width="221" height="1080" />
+        <img class="m-auto" src="themes/tw/images/basics/v8/liftoff.svg" alt="Изображение" width="221" height="1080" />
+        <img class="m-auto" src="themes/tw/images/basics/v8/logo.svg" alt="Изображение" width="221" height="1080" />
+        <img class="m-auto" src="themes/tw/images/basics/v8/orinoco.svg" alt="Изображение" width="221" height="1080" />
+        <img class="m-auto" src="themes/tw/images/basics/v8/turbofan.svg" alt="Изображение" width="221" height="1080" />
+      </div>
+      <footer>
+        <p>Сердцем движка V8&nbsp;являются Ignition и&nbsp;TurboFan.</p>
+        <p>
+          Когда аргументы передаются в функцию, важно, чтобы они были одного типа. Turbofan прекратит попытки
+          оптимизировать ваш JS после 4 попыток, если типы аргументов различаются.
+        </p>
+        <p>
+          Ignition&nbsp;&mdash; компонент, который помогает интерпретировать ваш байт-код. Как только движок получает
+          AST при загрузке страницы, он&nbsp;отправляет это дерево в&nbsp;Ignition, который преобразует его
+          в&nbsp;байт-код. Затем этот байт-код интерпретируется высокопроизводительным интерпретатором.
+        </p>
+        <p>
+          TurboFan&nbsp;&mdash; оптимизирующий компилятор, который компилирует ваш код в&nbsp;оптимизированный машинный
+          язык. Он&nbsp;генерирует чрезвычайно быстрый машинный код. Поскольку TurboFan генерирует оптимизированный
+          машинный код, V8&nbsp;использует TurboFan для создания оптимизированной версии часто используемого кода.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">TurboFan blocks</h2>
+      <img
+        class="place"
+        src="themes/tw/images/basics/v8/turbofan-blocks.svg"
+        width="989"
+        height="316"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Js&nbsp;engine pipeline</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/works/js-engine-pipeline.svg"
+        alt="Изображение"
+        width="706"
+        height="1448"
+      />
+      <a class="copyright" href="https://mathiasbynens.be/notes/prototypes"
+        >https://mathiasbynens.be/notes/prototypes</a
+      >
+      <footer>
+        <p>Движки JS&nbsp;имеют одинаковый общий конвейер.</p>
+        <p>
+          Мы&nbsp;также отметили, что хотя высокоуровневый конвейер у&nbsp;разных движков схож, в&nbsp;конвейере
+          оптимизации часто есть различия. Почему так? Почему у&nbsp;некоторых движков больше уровней оптимизации, чем
+          у&nbsp;других? Оказывается, существует компромисс между быстрым запуском кода или затратой большего времени,
+          но&nbsp;в&nbsp;конечном итоге запуском кода с&nbsp;оптимальной производительностью.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Works</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/works/tradeoff-startup-speed.svg"
+        alt="Изображение"
+        width="706"
+        height="1448"
+      />
+      <footer>
+        <p>
+          Интерпретатор может быстро производить байт-код, но&nbsp;байт-код, как правило, не&nbsp;очень эффективен.
+          Оптимизирующий компилятор, с&nbsp;другой стороны, работает немного дольше, но&nbsp;в&nbsp;конечном итоге
+          производит гораздо более эффективный машинный код.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Works</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/works/tradeoff-startup-speed-v8.svg"
+        alt="Изображение"
+        width="706"
+        height="1448"
+      />
+      <footer>
+        <p>
+          Именно эту модель использует V8. Интерпретатор V8&nbsp;называется Ignition, и&nbsp;это самый быстрый
+          интерпретатор среди всех движков (с&nbsp;точки зрения скорости выполнения сырого байт-кода). Оптимизирующий
+          компилятор V8&nbsp;называется TurboFan, и&nbsp;в&nbsp;конечном итоге он&nbsp;генерирует высоко
+          оптимизированный машинный код.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Works</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/works/tradeoff-startup-speed-spidermonkey.svg"
+        alt="Изображение"
+        width="706"
+        height="1448"
+      />
+      <footer>
+        <p>
+          Этот компромисс между задержкой запуска и&nbsp;скоростью выполнения является причиной того, что некоторые
+          движки JS предпочитают добавлять промежуточные уровни оптимизации. Например, SpiderMonkey добавляет базовый
+          уровень между интерпретатором и&nbsp;своим полным оптимизирующим компилятором IonMonkey.
+        </p>
+        <p>
+          Интерпретатор генерирует байт-код быстро, но&nbsp;байт-код выполняется относительно медленно. Baseline тратит
+          немного больше времени на&nbsp;генерацию кода, но&nbsp;обеспечивает лучшую производительность во&nbsp;время
+          выполнения. И, наконец, оптимизирующий компилятор IonMonkey тратит больше всего времени на&nbsp;создание
+          машинного кода, но&nbsp;этот код может работать очень эффективно.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          let result = 0;
+
+          for (let i = 0; i < 4242424242; ++i) {
+            result += i;
+          }
+
+          console.log(result);
+        </code>
+      </pre>
+      <footer>
+        <p>Циклы должны завершаться как можно раньше.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Pipeline detail v8</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/works/pipeline-detail-v8.svg"
+        alt="Изображение"
+        width="706"
+        height="1448"
+      />
+      <footer>
+        <p>
+          V8&nbsp;начинает выполнять байт-код в&nbsp;интерпретаторе Ignition. В&nbsp;какой-то момент движок определяет,
+          что код горячий , и&nbsp;запускает фронтенд TurboFan, который является частью TurboFan, занимающейся
+          интеграцией данных профилирования и&nbsp;построением базового машинного представления кода. Затем отправляется
+          в&nbsp;оптимизатор TurboFan в&nbsp;другом потоке для дальнейших улучшений.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Pipiline detail spidermonkey</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/works/pipeline-detail-spidermonkey.svg"
+        alt="Изображение"
+        width="706"
+        height="1448"
+      />
+      <footer>
+        <p>
+          Обновление: Начиная с&nbsp;версии Chrome&nbsp;91 (выпущенной в&nbsp;2021&nbsp;году), в&nbsp;V8&nbsp;появился
+          дополнительный компилятор под названием Sparkplug между интерпретатором Ignition и&nbsp;оптимизирующим
+          компилятором TurboFan.
+        </p>
+        <p>
+          Движок SpiderMonkey также начинает выполнять байт-код в&nbsp;интерпретаторе. Но&nbsp;у&nbsp;него есть
+          дополнительный уровень Baseline, который означает, что горячий код сначала отправляется в&nbsp;Baseline.
+          Компилятор Baseline генерирует код Baseline в&nbsp;главном потоке и&nbsp;продолжает выполнение, как только
+          он&nbsp;готов.
+        </p>
+        <p>
+          Если код Baseline выполняется некоторое время, SpiderMonkey в&nbsp;конечном итоге запускает фронтенд IonMonkey
+          и&nbsp;запускает оптимизатор&nbsp;&mdash; очень похоже на&nbsp;V8. Он&nbsp;продолжает работать
+          в&nbsp;Baseline, пока IonMonkey оптимизирует. Наконец, когда оптимизатор завершает работу, оптимизированный
+          код выполняется вместо кода Baseline.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>JIT</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/shared/tools/arrival.jpg"
+        alt="Изображение"
+        width="700"
+        height="572"
+      />
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers"
+        >JIT компилятор</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Переменная</h2>
+      <pre>
+        <code class="language-typescript">
+          const team = "webpractik";
+        </code>
+      </pre>
+      <table class="mb-0 mt-5">
+        <thead>
+          <tr class="next">
+            <th>Token</th>
+            <th>Token type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="next">
+            <td>const</td>
+            <td>
+              <i>Keyword</i>
+            </td>
+          </tr>
+          <tr class="next">
+            <td>num</td>
+            <td>
+              <i>Identifer</i>
+            </td>
+          </tr>
+          <tr class="next">
+            <td>=</td>
+            <td>
+              <i>Operator</i>
+            </td>
+          </tr>
+          <tr class="next">
+            <td>webpractik</td>
+            <td>
+              <i>String</i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          Кроме того, массивы двойных значений работают быстрее - скрытый класс массива отслеживает типы элементов, а массивы, содержащие только двойные значения, распаковываются (что вызывает скрытое изменение класса). Однако небрежное манипулирование массивами может вызвать дополнительную работу из-за упаковки и распаковки - например
+
+          var a = new Array();
+          a[0] = 77;   // Allocates
+          a[1] = 88;
+          a[2] = 0.5;   // Allocates, converts
+          a[3] = true; // Allocates, converts```
+          менее эффективен, чем:
+
+          var a = [77, 88, 0.5, true];
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          class Point {
+            constructor(x,y) {
+              this.x = x
+              this.y = y
+            }
+          }
+
+          const p1 = new Point(11, 22) // hidden classId created
+          const p2 = new Point(33, 44);
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Если вы&nbsp;можете, вы&nbsp;должны объявить свои свойства в&nbsp;конструкторе. Это гарантирует, что структура
+          объекта останется прежней, чтобы V8&nbsp;мог оптимизировать ваши объекты.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          for (var b = 0; b &lt; 10; b++) {
+            a[0] |= b;  // Oh no!
+          }
+          //vs.
+          a = new Array();
+          a[0] = 0;
+          for (var b = 0; b &lt; 10; b++) {
+            a[0] |= b;  // Much better! 2x faster.
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="place">Он&nbsp;развивается?</h2>
+      <a class="copyright" href="https://v8.dev/blog/10-years" target="_blank" rel="noopener noreferrer"
+        >10&nbsp;years</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Настройки Chrom'а</h2>
+      <a class="place" href="chrome://settings/content/v8" rel="noopener noreferrer" target="_blank"
+        >chrome://settings/content/v8</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          typeof 42;
+        // → 'number'
+
+        дополнение до двух 8-бит	0010 1010
+        дополнение до двух 32-бит	0000 0000 0000 0000 0000 0000 0010 1010
+        упакованный двоично-десятичный код (BCD)	0100 0010
+        32-битный IEEE-754 с плавающей точкой	0100 0010 0010 1000 0000 0000 0000 0000
+        64-битный IEEE-754 с плавающей точкой	0100 0000 0100 0101 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Скрытые классы&nbsp;&mdash; &nbsp;то, как V8&nbsp;идентифицирует наши объекты</h2>
+      <!--      <pre class="place">-->
+      <!--        <code class="language-typescript">-->
+      <!--          Давайте разберем это на этапы.-->
+
+      <!--          Мы объявляем объект:-->
+
+      <!--          const obj = { name: 'John'}-->
+      <!--          Затем V8 объявит classId для этого объекта.-->
+
+      <!--          const objClassId = ['name', 1]-->
+      <!--          Тогда наш объект создается следующим образом:-->
+
+      <!--          const obj = {...objClassId, 'John'}-->
+      <!--          Затем, когда мы получаем доступ к name свойству нашего объекта следующим образом:-->
+
+      <!--          obj.name-->
+      <!--          V8 выполняет следующий поиск:-->
+
+      <!--          obj[getProp(obj[0], name)]-->
+      <!--          Это процесс, который V8 выполняет при создании наших объектов. Теперь давайте посмотрим, как мы можем оптимизировать наши объекты и использовать их повторно classIds.-->
+
+      <!--          function Point(x, y) {-->
+      <!--  this.x = x;-->
+      <!--  this.y = y;-->
+      <!--}-->
+
+      <!--var p1 = new Point(11, 22);-->
+      <!--var p2 = new Point(33, 44);-->
+      <!--// At this point, p1 and p2 have a shared hidden class-->
+      <!--p2.z = 55;-->
+      <!--// warning! p1 and p2 now have different hidden classes!```-->
+      <!--        </code>-->
+      <!--      </pre>-->
+      <footer>
+        <p>
+          Через скрытые классы V8&nbsp;идентифицирует объекты когда вы&nbsp;создаете новый объект движок создаст для
+          него новый скрытый класс. Затем если вы&nbsp;измените тот&nbsp;же объект добавив новое свойство механизм
+          создаст новый скрытый класс со&nbsp;всеми свойствам из&nbsp;предыдущего класса и&nbsp;включит новое свойство.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide clear">
+      <h2 class="cover left-0 mt-[24px] -translate-y-[50%] pl-[120px] text-left">
+        <span class="text-light-gray">Акт 2</span>
+        <br />
+        <span>Возможности</span>
+      </h2>
+    </section>
+
+    <section class="slide">
+      <h2>На&nbsp;что мы&nbsp;можем повлиять?</h2>
+      <ul>
+        <li class="next">Графика</li>
+        <li class="next">Шрифты</li>
+        <li class="next">HTML/CSS/JS</li>
+        <li class="next">Анимации</li>
+        <li class="next">Third Party Scripts</li>
+      </ul>
+      <img
+        class="next ml-4 -translate-y-[50%] translate-x-[70%] rounded-sm"
+        src="themes/tw/pictures/memes/party.jpg"
+        alt="Изображение"
+        width="252"
+        height="252"
+      />
+      <a class="copyright" href="https://web.dev/blog/at-property-performance" target="_blank" rel="noopener noreferrer"
+        >At&nbsp;property performance</a
+      >
+      <!--      <p>-->
+      <!--        мобильные браузеры будут ждать около 300&nbsp;мс с&nbsp;момента нажатия кнопки, чтобы запустить событие click.-->
+      <!--        Причина этого в&nbsp;том, что браузер ждет, чтобы увидеть, действительно&nbsp;ли вы&nbsp;выполняете двойное-->
+      <!--        нажатие-->
+      <!--      </p>-->
+    </section>
+
+    <section class="slide">
+      <h2>Что может мешать?</h2>
+      <ul>
+        <li class="next">Network</li>
+        <li class="next">RAM</li>
+        <li class="next">CPU</li>
+      </ul>
+      <footer>
+        <p>
+          Последний показатель, который нужно упомянуть&nbsp;&mdash; потребление энергии. Подобно использованию памяти,
+          пользователь чувствует потребление энергии опосредованно, отмечая время, через которое устройство начинает
+          изменять воспринимаемую пользователем производительность (UPP). Для минимизации отрицательных эффектов
+          использования энергии, мы&nbsp;должны делать систему экономной.
+        </p>
+        <p>Браузерные расширения.</p>
+        <p>Пользователям - производительность.</p>
+        <p>Поисковым системам - seo ranking.</p>
+        <p>Бизнесу - конверсия.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Чем измерять производительность?</h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Lazy load</h2>
+      <img class="place" src="themes/tw/images/shared/tools/http.gif" width="700" height="860" alt="Изображение" />
+      <footer>
+        <p>
+          Если в&nbsp;течение 10-15 секунд пользователь не&nbsp;покинул ваш сайт, то&nbsp;это почти успех. Главная
+          страница&nbsp;&mdash; лицо вашей фирмы в&nbsp;интернете. Захватите внимание пользователя, удержите его
+          и&nbsp;перенаправьте на&nbsp;нужные ему разделы. Эффективно работающая главная страница сайта является
+          четвертой татуировкой для вашего ресурса.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Точно не&nbsp;здесь</h2>
+      <img
+        class="place"
+        src="themes/tw/images/shared/tools/browserstack.svg"
+        width="700"
+        height="860"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          .wave {
+            animation:
+              wave 1s 1s ease-out,
+              wave 1s 2s ease-out,
+              wave 1s 3s ease-out,
+              wave 1s 4s ease-out,
+              wave 1s 5s ease-out;
+          }
+
+          .wave {
+            animation:
+              wave-1 1s 1s ease-out,
+              wave-2 1s 2s ease-out,
+              wave-3 1s 3s ease-out,
+              wave-4 1s 4s ease-out,
+              wave-5 1s 5s ease-out;
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Dev Tools</h2>
+      <a class="copyright" href="https://www.youtube.com/watch?v=70XMVfGv2Q0" target="_blank" rel="noopener noreferrer"
+        >Chrome DevTools&nbsp;&mdash; спрятанные полезности</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Directed by</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/directed-by.jpg"
+        alt="Изображение"
+        width="800"
+        height="750"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Network</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/network.jpg"
+        alt="Изображение"
+        width="921"
+        height="1080"
+      />
+      <footer>
+        <p>
+          Если вы&nbsp;профилируете в&nbsp;браузере, убедитесь, что вы&nbsp;используете чистый + пустой профиль
+          браузера. Я&nbsp;даже использую для этого отдельный браузер. Если вы&nbsp;профилируете и&nbsp;у&nbsp;вас
+          включены расширения браузера, они могут испортить измерения. React devtools в&nbsp;частности существенно
+          повлияют на&nbsp;результаты, код рендеринга может выглядеть медленнее, чем он&nbsp;есть на&nbsp;самом деле для
+          ваших пользователей.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Performance</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/performance/base.jpg"
+        alt="Изображение"
+        width="921"
+        height="1080"
+      />
+      <a
+        class="copyright"
+        href="https://github.com/iamakulov/devtools-perf-features"
+        target="_blank"
+        rel="noopener noreferrer"
+        >(devtools-perf-features)</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Heap profile</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/performance/heap-profile.jpg"
+        alt="Изображение"
+        width="854"
+        height="1319"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          console.log('Initial Memory Usage:', process.memoryUsage());
+
+          Initial Memory Usage: {
+            rss: 38502400,
+            heapTotal: 4702208,
+            heapUsed: 2559000,
+            external: 1089863,
+            arrayBuffers: 10515
+          }
+          </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Performance memory</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/performance/memory.jpg"
+        alt="Изображение"
+        width="854"
+        height="1319"
+      />
+      <a class="copyright" href="https://github.com/facebook/memlab" rel="noopener noreferrer" target="_blank"
+        >memlab</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Performance insights</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/performance/performance-insights.jpg"
+        alt="Изображение"
+        width="755"
+        height="1440"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Стек</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/stack.jpg"
+        alt="Изображение"
+        width="1367"
+        height="459"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Память</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/memory.jpg"
+        alt="Изображение"
+        width="1921"
+        height="1080"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Рендеринг</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/rendering.jpg"
+        alt="Изображение"
+        width="2154"
+        height="1081"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>console.table(performance.timing)</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/console/timing.jpg"
+        alt="Изображение"
+        width="554"
+        height="1438"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Memory</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/console/memory.jpg"
+        alt="Изображение"
+        width="628"
+        height="183"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Navigator connection</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/console/navigator-connection.jpg"
+        alt="Изображение"
+        width="628"
+        height="183"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Поддержка entry types</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/console/supported-entry-types.jpg"
+        alt="Изображение"
+        width="928"
+        height="379"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>Консоль, дай мне список всех ресурсов, блокирующих рендеринг</h2>
+      <pre>
+        <code class="language-typescript">
+          copy(
+            window.performance.getEntriesByType('resource')
+              .filter(entry => entry.renderBlockingStatus === 'blocking')
+              .map(({name}) => name).join('\n')
+          );
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">AI&nbsp;assistance panel</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://developer.chrome.com/docs/devtools/ai-assistance?hl=ru"
+        >AI&nbsp;assistance</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">React Developer Tools</h2>
+      <a
+        class="copyright"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en"
+        >React Developer Tools</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Custom Dev Tools</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://github.com/coryhouse/react-switchboard?tab=readme-ov-file"
+        >React Switchboard</a
+      >
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Дом света <span class="next">(Lighthouse)</span></h2>
+        <img src="themes/tw/images/shared/tools/lighthouse.svg" alt="Изображение" width="200" height="200" />
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Lighthouse Scoring Calculator</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://googlechrome.github.io/lighthouse/scorecalc/#FCP=6000&SI=1000&FMP=4000&TTI=7300&FCI=6500&LCP=1000&TBT=0&CLS=0&device=mobile&version=10"
+        >Lighthouse scoring calculator</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Unlighthouse</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/shared/tools/unlighthouse.jpg"
+        alt="Изображение"
+        width="760"
+        height="1440"
+      />
+      <a class="copyright" href="https://unlighthouse.dev" target="_blank" rel="noopener noreferrer">Unlighthouse</a>
+    </section>
+
+    <section class="slide">
+      <h2>Benchmarks</h2>
+      <ul>
+        <li class="next">
+          <a href="https://jsbenchmark.com">https://jsbenchmark.com</a>
+        </li>
+        <li class="next">
+          <a href="https://jsbench.me">https://jsbench.me</a>
+        </li>
+        <li class="next">
+          <a href="https://jsperf.app">https://jsperf.app</a>
+        </li>
+        <li class="next">
+          <a href="https://perf.js.hyoo.ru">https://perf.js.hyoo.ru</a>
+        </li>
+      </ul>
+      <a rel="noopener noreferrer" target="_blank" class="copyright" href="https://jsbenchmark.com">jsbenchmark</a>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">
+        Техники оптимизации
+        <span class="next text-light-gray">the status quo</span>
+      </h2>
+      <a
+        class="copyright"
+        rel="noopener noreferrer"
+        target="_blank"
+        href="https://roadmap.sh/best-practices/frontend-performance"
+        >Best practices</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Сжатие размера изображений<span class="next text-light-gray">, без потери качества</span></h2>
+      <a href="https://www.npmjs.com/package/imagemin" rel="noopener noreferrer" target="_blank" class="copyright"
+        >imagemin</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">
+        Оптимизация шрифтов<span class="next text-light-gray">, где можно использовать только нужные символы</span>
+      </h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Stats</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/stats.jpg"
+        width="795"
+        height="1181"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>Lazy load</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/techniques/lazy-load.gif"
+        width="700"
+        height="860"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>Tree shaking</h2>
+      <img
+        class="place m-auto rounded-sm"
+        src="themes/tw/images/possibilities/techniques/tree-shaking.jpg"
+        width="686"
+        height="895"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>Code splitting</h2>
+      <img
+        class="place m-auto rounded-sm"
+        src="themes/tw/images/possibilities/techniques/code-splitting.jpg"
+        width="600"
+        height="967"
+        alt="Изображение"
+      />
+      <a rel="noopener noreferrer" target="_blank" class="copyright" href="https://www.npmjs.com/package/size-limit"
+        >size-limit</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Объединение 🤝</h2>
+    </section>
+
+    <section class="slide">
+      <h2>Minify code 🗜️</h2>
+      <img
+        class="place m-auto rounded-sm"
+        src="themes/tw/images/possibilities/techniques/minified.jpg"
+        width="1857"
+        height="841"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>React scan</h2>
+      <a class="copyright" rel="noopener noreferrer" target="_blank" href="https://react-scan.million.dev"
+        >React scan</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2>Pre (предварительный)</h2>
+      <ul>
+        <li class="next"><span>Pre</span>fetching</li>
+        <li class="next"><span>Pre</span>rendering</li>
+        <li class="next"><span>Pre</span>caching</li>
+      </ul>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://web.dev/learn/performance/prefetching-prerendering-precaching"
+        >prefetching-prerendering-precaching</a
+      >
+      <pre class="place">
+        <code class="language-typescript">
+          for (let i = 0; i < 1000; ++i) {
+            // fast 🚀
+          }
+
+          for (let i = 0.1; i < 1000.1; ++i) {
+            // slow 🐌
+          }
+
+          '\link rel="prefetch" href="/style.css" as="style" />'
+          '\link rel="preload" href="/style.css" as="style" />'
+          '\link rel="preconnect" href="https://example.com" />'
+          '\link rel="dns-prefetch" href="https://example.com" />'
+          '\link rel="prerender" href="https://example.com/about.html" />'
+          '\link rel="modulepreload" href="/script.js" />'
+
+          'preload– когда вам понадобится ресурс через несколько секунд'
+          'prefetch– когда вам нужен ресурс для следующей страницы'
+          'preconnect– когда вы знаете, что вам скоро понадобится ресурс, но вы пока не знаете его полный URL'
+          'dns-prefetch– когда вы знаете, что вам скоро понадобится ресурс, но вы еще не знаете его полный URL (для старых браузеров)'
+          'prerender– когда вы уверены, что большинство пользователей перейдут на определенную страницу, и вы хотите ускорить этот процесс'
+          'modulepreload– когда вам скоро понадобится скрипт модуля ES'
+
+          https://v8.dev/blog/react-cliff
+          https://www.npmjs.com/package/autocannon
+        </code>
+      </pre>
+      <p>
+        32-битное представление дополнения до&nbsp;двух полезно не&nbsp;только для операций с&nbsp;массивами.
+        В&nbsp;целом, процессоры выполняют целочисленные операции намного быстрее, чем операции с&nbsp;плавающей точкой
+        . Вот почему в&nbsp;следующем примере первый цикл легко в&nbsp;два раза быстрее по&nbsp;сравнению со&nbsp;вторым
+        циклом.
+      </p>
+      <p>
+        Если оба операнда представлены как целые числа, процессор может вычислить результат очень эффективно.
+        V8&nbsp;имеет дополнительные быстрые пути для случаев, когда divisor является степенью двойки. Для значений,
+        представленных как числа с&nbsp;плавающей точкой, вычисления намного сложнее и&nbsp;занимают гораздо больше
+        времени
+      </p>
+      <pre class="place">
+        <code class="language-typescript">
+          Почему у некоторых движков больше уровней оптимизации, чем у других?
+          Оказывается, существует компромисс между быстрым запуском кода или затратой большего времени, но в конечном итоге запуском кода с оптимальной производительностью
+
+          Интерпретатор может быстро производить байт-код, но байт-код, как правило, не очень эффективен. Оптимизирующий компилятор, с другой стороны, работает немного дольше, но в конечном итоге производит гораздо более эффективный машинный код.
+
+Именно эту модель использует V8. Интерпретатор V8 называется Ignition, и это самый быстрый интерпретатор среди всех движков (с точки зрения скорости выполнения сырого байт-кода). Оптимизирующий компилятор V8 называется TurboFan, и в конечном итоге он генерирует высоко оптимизированный машинный код.
+
+          тот компромисс между задержкой запуска и скоростью выполнения является причиной того, что некоторые движки JS предпочитают добавлять промежуточные уровни оптимизации. Например, SpiderMonkey добавляет базовый уровень между интерпретатором и своим полным оптимизирующим компилятором IonMonkey:
+
+          Интерпретатор генерирует байт-код быстро, но байт-код выполняется относительно медленно. Baseline тратит немного больше времени на генерацию кода, но обеспечивает лучшую производительность во время выполнения. И, наконец, оптимизирующий компилятор IonMonkey тратит больше всего времени на создание машинного кода, но этот код может работать очень эффективно.
+
+          Давайте рассмотрим конкретный пример и посмотрим, как конвейеры в разных движках справляются с этим. Вот код, который часто повторяется в горячем цикле.
+
+          let result = 0;
+          for (let i = 0; i < 4242424242; ++i) {
+            result += i;
+          }
+          console.log(result);
+
+          V8 начинает выполнять байт-код в интерпретаторе Ignition. В какой-то момент движок определяет, что код горячий , и запускает фронтенд TurboFan, который является частью TurboFan, занимающейся интеграцией данных профилирования и построением базового машинного представления кода. Затем это отправляется в оптимизатор TurboFan в другом потоке для дальнейших улучшений.
+
+          Пока оптимизатор работает, V8 продолжает выполнять байт-код в Ignition. В какой-то момент оптимизатор завершает работу, и у нас есть исполняемый машинный код, и выполнение может продолжаться с ним.
+
+          Обновление: Начиная с версии Chrome 91 (выпущенной в 2021 году), в V8 появился дополнительный компилятор под названием Sparkplug между интерпретатором Ignition и оптимизирующим компилятором TurboFan
+
+          Движок SpiderMonkey также начинает выполнять байт-код в интерпретаторе. Но у него есть дополнительный уровень Baseline, который означает, что горячий код сначала отправляется в Baseline. Компилятор Baseline генерирует код Baseline в главном потоке и продолжает выполнение, как только он готов.
+
+          Если код Baseline выполняется некоторое время, SpiderMonkey в конечном итоге запускает фронтенд IonMonkey и запускает оптимизатор — очень похоже на V8. Он продолжает работать в Baseline, пока IonMonkey оптимизирует. Наконец, когда оптимизатор завершает работу, оптимизированный код выполняется вместо кода Baseline.
+        </code>
+      </pre>
+      <footer>
+        <p>Порядок загрузки ресурсов важен.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Удалите неиспользуемый код</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/techniques/remove-unused-code.jpg"
+        width="900"
+        height="860"
+        alt="Изображение"
+      />
+      <a rel="noopener noreferrer" target="_blank" class="copyright" href="https://almanac.httparchive.org/ru/2022"
+        >httparchive</a
+      >
+      <footer>
+        <p>Библиотеки, которые не нужны</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Удалить неиспользуемый код</h2>
+      <ul>
+        <li class="next">
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://www.npmjs.com/package/@cerner/duplicate-package-checker-webpack-plugin"
+          >
+            duplicate-package-checker-webpack-plugin
+          </a>
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://www.npmjs.com/package/dependency-cruiser">
+            dependency-cruiser
+          </a>
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://www.npmjs.com/package/depcheck">depcheck</a>
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" class="copyright" href="https://github.com/megahertz/howfat"
+            >Howfat</a
+          >
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://github.com/danielroe/beasties"
+            >Beasties (ex Critters)</a
+          >
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://github.com/es-tooling/eslint-plugin-depend"
+            >eslint-plugin-depend</a
+          >
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://npmgraph.js.org">npmgraph</a>
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://github.com/statoscope/statoscope">statoscope</a>
+        </li>
+        <li class="next">
+          <a rel="noopener noreferrer" target="_blank" href="https://github.com/sharkdp/hyperfine">hyperfine</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">🗳️ Кэширование</h2>
+      <a class="copyright" target="_blank" rel="noopener noreferrer" href="https://v8.dev/blog/code-caching-for-devs"
+        >Code caching for devs</a
+      >
+      <footer>
+        <p>
+          Если при загрузке сайта второй или третий раз JS-код правильно кэширован, то&nbsp;браузеру не&nbsp;приходится
+          больше парсить и&nbsp;компилировать исходный код в&nbsp;байт код. В&nbsp;таком случае он&nbsp;просто загружает
+          последний напрямую с&nbsp;диска&nbsp;&mdash; называется кэшированием байт кода. Более того, если функция
+          &laquo;горячая&raquo; (часто выполняется), то&nbsp;она дополнительно оптимизируется в&nbsp;машинный код. Так
+          работает JIT-компиляция.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>export NODE_COMPILE_CACHE=~/.cache/nodejs-compile-cache</h2>
+      <footer>
+        <p>
+          Тем не&nbsp;менее, благодаря непревзойдённому Джойи Чунгу, в&nbsp;Node появилась функциональность
+          &laquo;compile cache&raquo;. Теперь вы&nbsp;можете настроить переменную среды и&nbsp;сразу получить ускорение
+          загрузки скриптов.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Доставка современного кода</h2>
+      <p class="next"><samp>modern.js</samp> и <samp>old.bundle.js</samp></p>
+      <pre class="next">
+        <code class="language-typescript">
+          &lt;script type="module" src="modern.js"&gt;&lt;/script&gt;
+          &lt;script no module src="old.bundle.js" defer&gt;&lt;/script&gt;
+        </code>
+      </pre>
+      <a rel="noopener noreferrer" target="_blank" class="copyright" href="https://www.npmjs.com/package/size-limit"
+        >size limit</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">no(po)lyfill</h2>
+      <a class="copyright" target="_blank" rel="noopener noreferrer" href="https://github.com/SukkaW/nolyfill"
+        >nolyfill</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2>Barrel imports</h2>
+      <pre>
+        <code class="language-typescript">
+          // feature/index.js
+          export * from "user";
+          export * from "permissions";
+          export * from "actions";
+        </code>
+      </pre>
+      <a
+        class="copyright"
+        rel="noopener noreferrer"
+        target="_blank"
+        href="https://github.com/thepassle/eslint-plugin-barrel-files"
+        >eslint-plugin-barrel-files</a
+      >
+      <footer>
+        <p>
+          Второй минус уже более близок к&nbsp;реальности&nbsp;&mdash; barrel-file ведут к&nbsp;замедлению перформанса
+          инструментов сборки. Когда в&nbsp;тулинге сборки появилась оптимизация по&nbsp;выбросу неиспользуемых
+          экспортов, в&nbsp;сознании разработчиков это отпечаталось как &laquo;если я&nbsp;не&nbsp;использую экспорт,
+          его стоимость для сборки&nbsp;&mdash; нулевая&raquo;. Однако, это не&nbsp;так. Если вы&nbsp;используете jest
+          для юнит-тестов, то&nbsp;вы&nbsp;напрямую можете столкнуться с&nbsp;этой проблемой, т.к. jest
+          не&nbsp;занимается три-шейкингов и&nbsp;если вы&nbsp;импортируете 1&nbsp;маленькую функцию
+          из&nbsp;barrel-файла&nbsp;&mdash; вы, на&nbsp;самом деле, импортируете весь модуль.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Parallel DOM</h2>
+      <a rel="noopener noreferrer" target="_blank" class="copyright" href="https://github.com/pdomdev/pdom">pdom</a>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Подключить CDN</h2>
+      <div>
+        <img
+          class="m-auto rounded-sm"
+          src="themes/tw/images/possibilities/technologies/cdn.jpg"
+          width="312"
+          height="512"
+          alt="Изображение"
+        />
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>ООП?</h2>
+      <div class="columns three">
+        <img
+          class="rounded-sm"
+          src="themes/tw/pictures/memes/oop/encapsulation.jpg"
+          alt="Изображение"
+          width="1184"
+          height="1141"
+        />
+        <img
+          class="rounded-sm"
+          src="themes/tw/pictures/memes/oop/inheritance.jpg"
+          alt="Изображение"
+          width="1183"
+          height="1133"
+        />
+        <img
+          class="rounded-sm"
+          src="themes/tw/pictures/memes/oop/polymorphism.jpg"
+          alt="Изображение"
+          width="1183"
+          height="1137"
+        />
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">O&nbsp;notation</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/o-notation.jpg"
+        alt="O notation"
+        width="1280"
+        height="1008"
+      />
+      <footer>
+        <p>Нотация, которая позволяет определить верхнюю границу скорости работы алгоритма.</p>
+        <p>
+          Это асимптотическая сложность, которая описывает верхнюю границу сложности алгоритма при увеличении размера
+          входных данных, или&nbsp;то, как рост размера входных данных влияет на&nbsp;количество операций.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Что если проблема в&nbsp;стороннем пакете?</h2>
+      <img
+        class="next place rounded-sm"
+        src="themes/tw/images/shared/tools/patch-package.svg"
+        width="200"
+        height="200"
+        alt="Изображение"
+      />
+      <a rel="noopener noreferrer" target="_blank" class="copyright" href="https://www.npmjs.com/package/patch-package"
+        >patch-package</a
+      >
+    </section>
+
+    <section class="slide">
+      <div>
+        <h2 class="">задержка на&nbsp;мобильных</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/smile.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/smile.gif" alt="Изображение" width="52" height="52" />
+        </picture>
+      </div>
+      <footer>
+        <p>Устройства стали доступнее, но не значит, что они мощные.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Мониторинг производительности</h2>
+      <ul>
+        <li>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://docs.sentry.io/platforms/javascript/tracing/instrumentation/performance-metrics"
+            >Sentry</a
+          >
+        </li>
+        <li>
+          <a rel="noopener noreferrer" target="_blank" href="https://treo.sh">treo</a>
+        </li>
+        <li>
+          <a rel="noopener noreferrer" target="_blank" href="https://browserbench.org/Speedometer3.0">Speedometer</a>
+        </li>
+        <li>
+          <a rel="noopener noreferrer" target="_blank" href="https://www.npmjs.com/package/perfume.js">Perfume</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Этого бывает мало...</h2>
+    </section>
+
+    <section class="slide clear">
+      <h2 class="cover left-0 mt-[24px] -translate-y-[50%] pl-[120px] text-left">
+        <span class="text-light-gray">Акт 3</span>
+        <br />
+        <span>Набор приёмов&nbsp;/ советов (proposal)</span>
+      </h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Мем</h2>
+      <img class="rounded-sm" src="themes/tw/pictures/memes/madman.jpg" alt="Изображение" width="1000" height="52" />
+      <img
+        class="next absolute translate-x-[650px] translate-y-[290px]"
+        src="themes/tw/pictures/arrow.svg"
+        alt="Изображение"
+        aria-hidden="true"
+        width="132"
+        height="132"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <div class="columns two h-full">
+        <img class="m-auto" src="themes/tw/images/shared/languages/js.svg" width="200" height="200" alt="Изображение" />
+        <img class="m-auto" src="themes/tw/images/shared/languages/ts.svg" width="200" height="200" alt="Изображение" />
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Node vs&nbsp;Bun</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/shared/tools/node-vs-bun.jpg"
+        alt="Изображение"
+        width="580"
+        height="720"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>Ландшафт</h2>
+      <a href="https://rsdoctor.dev" rel="noopener noreferrer" target="_blank">
+        <img
+          class="absolute translate-x-[50%] translate-y-[100%]"
+          src="themes/tw/images/shared/tools/vite.svg"
+          alt="Изображение"
+          width="132"
+          height="32"
+        />
+      </a>
+      <a href="https://rsdoctor.dev" rel="noopener noreferrer" target="_blank">
+        <img
+          class="next absolute translate-x-[200%] translate-y-[50%]"
+          src="themes/tw/images/shared/tools/rollup.svg"
+          alt="Изображение"
+          width="126"
+          height="16"
+        />
+      </a>
+      <a href="https://rsdoctor.dev">
+        <img
+          class="next absolute translate-x-[200%] translate-y-[50%]"
+          src="themes/tw/images/shared/tools/rsdoctor.png"
+          alt="Изображение"
+          width="126"
+          height="16"
+        />
+      </a>
+      <a href="https://rsdoctor.dev" rel="noopener noreferrer" target="_blank">
+        <img
+          class="next absolute translate-x-[300%] translate-y-[10%]"
+          src="themes/tw/images/shared/tools/rolldown.svg"
+          alt="Изображение"
+          width="200"
+          height="300"
+        />
+      </a>
+      <a href="https://rsdoctor.dev">
+        <img
+          class="next absolute translate-x-[20%] translate-y-[300%]"
+          src="themes/tw/images/shared/tools/rsbuild.svg"
+          alt="Изображение"
+          width="116"
+          height="16"
+        />
+      </a>
+      <a href="https://rsdoctor.dev" rel="noopener noreferrer" target="_blank">
+        <img
+          class="next absolute translate-x-[20%] translate-y-[300%]"
+          src="themes/tw/images/shared/tools/rsbuild.svg"
+          alt="Изображение"
+          width="116"
+          height="16"
+        />
+      </a>
+      <a href="https://rsdoctor.dev" rel="noopener noreferrer" target="_blank">
+        <img
+          class="next absolute translate-x-[40%] translate-y-[90%]"
+          src="themes/tw/images/shared/tools/webpack.svg"
+          alt="Изображение"
+          width="116"
+          height="16"
+        />
+      </a>
+      <a href="https://rsdoctor.dev">
+        <img
+          class="next absolute translate-x-[100%] translate-y-[100%]"
+          src="themes/tw/images/shared/tools/brunch.svg"
+          alt="Изображение"
+          width="256"
+          height="256"
+        />
+      </a>
+      <a href="https://rsdoctor.dev" rel="noopener noreferrer" target="_blank">
+        <img
+          class="next absolute translate-x-[200%] translate-y-[100%]"
+          src="themes/tw/images/shared/tools/farm.png"
+          alt="Изображение"
+          width="256"
+          height="256"
+        />
+      </a>
+      <footer>
+        <p>
+          Фреймворкизм не&nbsp;приносит результата. Ответ не&nbsp;в&nbsp;другом инструменте, а&nbsp;в&nbsp;смелости
+          заниматься инжинирингом.
+        </p>
+        <p>
+          Реальный прирост производительности часто кроется в&nbsp;нашем собственном коде,
+          а&nbsp;не&nbsp;во&nbsp;фреймворке.
+        </p>
+        <p>
+          Однако работают эти инструменты быстрее не&nbsp;обязательно из-за того, что написаны на&nbsp;более быстром
+          языке. Их&nbsp;скорость может объясняться тем, что: 1. их&nbsp;пишут с&nbsp;упором на&nbsp;производительность
+          и&nbsp;2. поверхность API уже налажена, поэтому авторам не&nbsp;нужно тратить время на&nbsp;проработку общего
+          дизайна.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Несколько причин, по которым JS не будет доступен</h2>
+      <ol>
+        <li>Расширение браузера вмешалось в работу сайта</li>
+        <li>Нестабильное соединение не загрузило зависимости правильно</li>
+        <li>Внутренняя ИТ-политика заблокировала зависимости</li>
+        <li>Сеть Wi-Fi заблокировала определенные CDN</li>
+        <li>Пользователь просматривает ваш сайт в поезде, который только что въехал в туннель</li>
+        <li>Устройству недостаточно памяти</li>
+        <li>В вашем JS есть ошибка</li>
+        <li>Запрос <code>async</code> fetch не был огражден в <code>try</code> <code>catch</code> и не был выполнен</li>
+        <li>У пользователя случайно выключен переключатель JS</li>
+        <li>Пользователь использует переключатель JS для предотвращения загрузки рекламы</li>
+        <li>Блокировщик рекламы заблокировал загрузку вашего JS</li>
+        <li>
+          Пользователь использует
+          <a href="https://en.wikipedia.org/wiki/Opera_Mini" rel="noopener noreferrer" target="_blank">Opera Mini</a>
+        </li>
+        <li>
+          У пользователя
+          <a
+            href="https://support.google.com/pixelphone/answer/7055392?hl=en-GB"
+            rel="noopener noreferrer"
+            target="_blank"
+            >включено сохранение данных</a
+          >
+        </li>
+        <li>Google Tag Manager добавил мошеннические, мешающие скрипты</li>
+        <li>Браузер завис при попытке проанализировать ваш JS-пакет</li>
+      </ol>
+      <footer>
+        <p>
+          Время выполнения&nbsp;JS играет решающую роль в&nbsp;загрузке страницы и&nbsp;производительности страницы.
+          Основной поток, будучи занятым, приведет к&nbsp;более медленному времени рендеринга. Кроме того,
+          взаимодействие с&nbsp;пользователем может стать неотзывчивым.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Local development</h2>
+      <div class="columns two">
+        <a rel="noopener noreferrer" target="_blank" href="https://biomejs.dev">
+          <img src="themes/tw/images/shared/tools/biome.svg" width="500" height="860" alt="Изображение" />
+        </a>
+        <a href="https://oxc.rs" rel="noopener noreferrer" target="_blank">
+          <img src="themes/tw/images/shared/tools/oxc.svg" width="500" height="860" alt="Изображение" />
+        </a>
+        <div>proxy</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>The Release Radar 📡</h2>
+      <video
+        muted
+        disablepictureinpicture
+        preload="metadata"
+        class="next absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        width="500"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/possibilities/yandex-technologies.jpg"
+      >
+        <source src="themes/tw/video/possibilities/yandex-technologies.mp4" type="video/mp4" />
+      </video>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://yandex.ru/company/researches/2023/frontenders"
+        >Researches frontenders</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Vanilla js</h2>
+      <iframe
+        class="absolute left-1/2 top-1/2 my-2 -translate-x-1/2 -translate-y-1/2 rounded-sm"
+        title="Vanilla js"
+        width="700"
+        height="700"
+        id="upload-iframe"
+      ></iframe>
+      <div class="absolute left-1/2 top-1/2 my-2 -translate-x-1/2 -translate-y-1/2">
+        <button
+          class="upload-btn-iframe relative box-border flex h-[60px] w-[169px] cursor-pointer items-center overflow-hidden rounded-sm border-[3px] border-solid border-white bg-black px-[15px] py-0 text-white no-underline shadow-[6px_6px_0_#00a4ef] transition-all duration-[0.1s] ease-[ease-out] before:rounded-sm"
+          type="button"
+          id="upload-iframe-btn"
+          data-link="http://vanilla-js.com"
+        >
+          <span>
+            <span>Нажми на&nbsp;меня</span>
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Повсюду</h2>
+      <img
+        class="rounded-sm"
+        src="themes/tw/pictures/memes/everywhere.jpg"
+        alt="Изображение"
+        width="880"
+        height="1188"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Java Script <span class="next">(клин клином)</span></h2>
+      <p
+        class="next absolute translate-x-[200px] translate-y-[80px] rotate-[30deg] rounded-[4px] bg-white px-2 !text-black"
+      >
+        Но&nbsp;я&nbsp;пишу на&nbsp;React!
+      </p>
+      <p
+        class="next absolute translate-x-[100px] translate-y-[400px] rotate-[-30deg] rounded-[4px] bg-white px-2 !text-black"
+      >
+        Но&nbsp;я&nbsp;пишу на&nbsp;Vue!
+      </p>
+      <p
+        class="next absolute translate-x-[400px] translate-y-[400px] rotate-[30deg] rounded-[4px] bg-white px-2 !text-black"
+      >
+        Но&nbsp;я&nbsp;пишу на&nbsp;Angular!
+      </p>
+      <p
+        class="next absolute translate-x-[500px] translate-y-[100px] rotate-[-30deg] rounded-[4px] bg-white px-2 !text-black"
+      >
+        Но&nbsp;я&nbsp;пишу на&nbsp;Solid!
+      </p>
+
+      <p
+        class="next absolute translate-x-[700px] translate-y-[270px] rotate-[-30deg] rounded-[4px] bg-white px-2 !text-black"
+      >
+        А&nbsp;я&nbsp;на&nbsp;jQuery!
+        <img src="themes/tw/images/shared/tools/jquery-book.jpg" alt="Изображение" width="147" height="705" />
+      </p>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Oracle, it’s time to free JS</h2>
+      <a class="copyright" href="https://javascript.tm" rel="noopener noreferrer" target="_blank">javascript.tm</a>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const startTime = Date.now();
+
+          doTask();
+
+          console.log(`Длительность выполнения: ${Date.now() - startTime} ms`);
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Profile</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          console.profile();
+
+          doTask();
+
+          console.profileEnd();
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Создание метки
+          performance.mark('task-start');
+
+          // Выполнение функции
+          doTask();
+
+          // Завершение метки
+          performance.mark('task-end');
+
+          // Создание измерения
+          performance.measure('task', 'task-start', 'task-end');
+
+          // Получение результатов
+          const [firstItem, ...rest] = performance.getEntriesByName('task');
+
+          console.log(firstItem.duration);
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Performance: measure() method</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://developer.mozilla.org/en-US/docs/Web/API/Performance/measure"
+        >measure</a
+      >
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://almanac.httparchive.org/en/2022/third-parties#performance-impact"
+        >performance-impact</a
+      >
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://rutube.ru/video/fe2a7cef6191e4a8790d2d8b8fa804d7"
+        >Видео</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const markerStart = "marker-start";
+          const markerEnd = "marker-end";
+
+          // Run some nested timeouts, and create a PerformanceMark for each.
+          performance.mark(markerNameA);
+          setTimeout(function() {
+            performance.mark(markerNameB);
+            setTimeout(function() {
+
+              // Create a variety of measurements.
+              performance.measure("measure a to b", markerNameA, markerNameB);
+              performance.measure("measure a to now", markerNameA);
+              performance.measure("measure from navigation start to b", undefined, markerNameB);
+              performance.measure("measure from the start of navigation to now");
+
+              // Pull out all of the measurements.
+              console.log(performance.getEntriesByType("measure"));
+
+              // Finally, clean up the entries.
+              performance.Marks();
+              performance.Measures();
+            }, 1000);
+          }, 1000);
+
+          console.time("answer time");
+          alert("Click to continue");
+          console.timeLog("answer time");
+          alert("Do a bunch of other stuff...");
+          console.timeEnd("answer time");
+          </code>
+        </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          import { performance } from "node:perf_hooks";
+
+          console.log(performance.now());
+
+          --prof
+          --cpu-prof
+          https://nodejs.org/api/inspector.html
+        </code>
+      </pre>
+      <a class="copyright" href="https://nodejs.org/api/perf_hooks.html" target="_blank" rel="noopener noreferrer"
+        >perf_hooks</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">
+        <span>===</span>
+        <br />
+        Сравнение строк
+      </h2>
+      <footer>
+        <p>
+          Строковые операции являются основной частью&nbsp;JS из-за его контекста. Чтобы оптимизировать код, насыщенный
+          строками, движки должны были быть креативными. Под этим я&nbsp;подразумеваю, что они должны были представлять
+          String объект с&nbsp;помощью множественного строкового представления в&nbsp;C++, в&nbsp;зависимости
+          от&nbsp;варианта использования. Есть два общих случая, о&nbsp;которых вам следует беспокоиться, поскольку они
+          справедливы для&nbsp;V8 (наиболее распространенного движка на&nbsp;сегодняшний день), а&nbsp;также, как
+          правило, и&nbsp;для других движков.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Перечисления</h2>
+      <pre class="place w-[90%]">
+        <code class="language-typescript">
+          // #1
+          enum Position {
+            TOP    = 'TOP',
+            BOTTOM = 'BOTTOM',
+          }
+
+          // #2
+          enum Position {
+            TOP,    // = 0
+            BOTTOM, // = 1
+          }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          JS&nbsp;позволяет легко скрыть реальную стоимость сравнения строк. Если вам нужно сравнить строки в&nbsp;C, вы
+          бы&nbsp;использовали функцию strcmp(a, b). JS&nbsp;использует === вместо этого , поэтому
+          вы&nbsp;не&nbsp;видите strcmp. Но&nbsp;он&nbsp;есть, и&nbsp;сравнение строк обычно (но&nbsp;не&nbsp;всегда)
+          требует сравнения каждого символа в&nbsp;строке с&nbsp;символами в&nbsp;другой строке; сравнение
+          строк&nbsp;&mdash; это O(n). Один из&nbsp;распространенных шаблонов&nbsp;JS, которого следует
+          избегать,&nbsp;&mdash; это строки как перечисления. Но&nbsp;с&nbsp;появлением&nbsp;TS этого должно быть легко
+          избежать, поскольку перечисления по&nbsp;умолчанию являются целыми числами.
+        </p>
+        <p>В&nbsp;случае строковых перечислений это также очень хорошо сжималось gzip из-за повторяющихся строк.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          export enum HttpStatusCode {
+              Ok = 200,
+              BadRequest = 400,
+              Authorized = 401,
+              Forbidden = 403,
+              NotFound = 404,
+              InternalServerError = 500,
+              GatewayTimeout = 503,
+          }
+
+          export enum FileAccess {
+              // constant members
+              None,
+              Read = 1 << 1,
+              Write = 1 << 2,
+              ReadWrite = Read | Write,
+              // computed member
+              G = '123'.length,
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          export var HttpStatusCode;
+          (function (HttpStatusCode) {
+              HttpStatusCode[HttpStatusCode["Ok"] = 200] = "Ok";
+              HttpStatusCode[HttpStatusCode["BadRequest"] = 400] = "BadRequest";
+              HttpStatusCode[HttpStatusCode["Authorized"] = 401] = "Authorized";
+              HttpStatusCode[HttpStatusCode["Forbidden"] = 403] = "Forbidden";
+              HttpStatusCode[HttpStatusCode["NotFound"] = 404] = "NotFound";
+              HttpStatusCode[HttpStatusCode["InternalServerError"] = 500] = "InternalServerError";
+              HttpStatusCode[HttpStatusCode["GatewayTimeout"] = 503] = "GatewayTimeout";
+          })(HttpStatusCode || (HttpStatusCode = {}));
+
+          export var FileAccess;
+          (function (FileAccess) {
+              // constant members
+              FileAccess[FileAccess["None"] = 0] = "None";
+              FileAccess[FileAccess["Read"] = 2] = "Read";
+              FileAccess[FileAccess["Write"] = 4] = "Write";
+              FileAccess[FileAccess["ReadWrite"] = 6] = "ReadWrite";
+              // computed member
+              FileAccess[FileAccess["G"] = '123'.length] = "G";
+          })(FileAccess || (FileAccess = {}));
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          export const HttpStatusCodes = {
+              Ok: 200,
+              BadRequest: 400,
+              Authorized: 401,
+              Forbidden: 403,
+              NotFound: 404,
+              InternalServerError: 500,
+              GatewayTimeout: 503,
+          } as const;
+
+          export const FileAccesses = {
+              None: 0,
+              Read: 1 << 1,
+              Write: 1 << 2,
+              ReadWrite: 3,
+              G: '123'.length,
+          } as const;
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Перечисления</h2>
+      <pre class="place w-[90%]">
+        <code class="language-typescript">
+          let _ = 0;
+
+          for (let i = 0; i < 1000000; i++) {
+            let current = i % 2 === 0 ? Position.TOP : Position.BOTTOM;
+
+            if (current === Position.TOP) {
+              _ += 1;
+            }
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="string" percentage="50"></custom-scale>
+        <custom-scale name="int" percentage="95" winner="true"></custom-scale>
+      </div>
+      <footer>
+        <p>Бенчмаркинг&nbsp;&mdash; самая важная часть оптимизации.</p>
+        <p>
+          Процентные результаты представляют собой кол-во операций, выполненных в&nbsp;течение 1&nbsp;с, деленное на
+          количество операций в&nbsp;случае с&nbsp;наивысшей оценкой. Чем выше, тем лучше.
+        </p>
+        <p>
+          Как видите, разница может быть существенной. Разница не&nbsp;обязательно связана со&nbsp;strcmpстоимостью,
+          поскольку движки иногда могут использовать пул строк и&nbsp;сравнивать по&nbsp;ссылке, но&nbsp;она также
+          связана с&nbsp;тем, что целые числа обычно передаются по&nbsp;значению в&nbsp;движках&nbsp;JS, тогда как
+          строки всегда передаются как указатели, а&nbsp;доступ к&nbsp;памяти является дорогостоящим. В&nbsp;коде
+          с&nbsp;большим количеством строк это может иметь огромное влияние.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">
+        <span>△ ▢</span>
+        <br />
+        Избегайте разных форм
+      </h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Вводные
+          const objects = [
+            {
+              name: 'Анатолий',
+              age: 36,
+            },
+            {
+              name: 'Иннокентий',
+              age: 42
+            },
+          ];
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Движки JS&nbsp;пытаются оптимизировать код, предполагая, что объекты имеют определенную форму, и&nbsp;что
+          функции будут получать объекты той&nbsp;же формы. Это позволяет им&nbsp;хранить ключи формы 1&nbsp;раз для
+          всех объектов этой формы, а&nbsp;значения&nbsp;&mdash; в&nbsp;отдельном плоском массиве.
+        </p>
+        <p>
+          Я&nbsp;использовал слово &laquo;форма&raquo; для описания этой концепции, но&nbsp;имейте в&nbsp;виду, что
+          вы&nbsp;также можете встретить термины &laquo;скрытый класс&raquo;&nbsp;/ &laquo;карта&raquo; для
+          ее&nbsp;описания, в&nbsp;зависимости от&nbsp;движка.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const shape = [
+            { name: 'name', type: 'string' },
+            { name: 'age',  type: 'integer' },
+          ];
+
+          const objects = [
+            ['Анатолий', 36],
+            ['Иннокентий', 42],
+          ];
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <img src="themes/tw/images/possibilities/mobile.jpg" alt="Изображение" width="960" height="540" />
+      <footer>
+        <p>
+          Для примера, вспомните, как работают мобильные устройства: вы&nbsp;можете включить режим энергосбережения,
+          когда отключаются другие системы. Но&nbsp;есть и&nbsp;более жёсткий режим, который включается автоматически,
+          когда заряд уменьшается до&nbsp;5%&nbsp;&mdash; система включает троттлинг процессора, замедляя выполнение
+          всех инструкций.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          function add(a, b) {
+            return {
+              name: a.name + b.name,
+              type: a.type + b.type
+            }
+          }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Например, если во&nbsp;время выполнения следующая функция получает два объекта с&nbsp;формой { x: number, y:
+          number }, движок предположит, что будущие объекты будут иметь такую&nbsp;же форму, и&nbsp;сгенерирует машинный
+          код, оптимизированный для этой формы.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          function add(x,y) {
+            return x + y
+          }
+
+          add(1,2) // monomorphic
+          add('a', 'b') // polymorphic
+          add(true, false)
+          add({},{})
+          add([],[]) // megamorphic - at this stage, 4+ tries, no optimization will happen
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Вводные
+          let _ = 0;
+
+          // Monomorphic
+          const data1 = { a: 1, b: _, c: _, d: _ };
+          const data2 = { a: 1, b: _, c: _, d: _ };
+          const data3 = { a: 1, b: _, c: _, d: _ };
+
+          // Polymorphic
+          const data1 = { a: 1, b: _, c: _, d: _ };
+          const data2 = { a: 1, b: _, c: _, d: _ };
+          const data3 = { a: _, b: 1, c: _, d: _ };
+
+          // Megamorphic
+          const data1 = { a: 1, b: _, c: _, d: _ };
+          const data2 = { b: _, a: 1, c: _, d: _ };
+          const data3 = { b: _, c: _, a: 1, d: _ };
+        </code>
+      </pre>
+      <a
+        class="copyright"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html"
+        >Мономорфизм</a
+      >
+      <footer>
+        <p>Мономофризм что у&nbsp;объектов одинаковые ключи без отличий.</p>
+        <p>Мегаморфизм тут объекты совершенно разные и&nbsp;их&nbsp;нельзя сравнивать.</p>
+        <p>Полиморфизм у&nbsp;объектов общая структура но&nbsp;меняются небольшие отличия.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          function add(a, b) {
+            return a.a + a.b + a.c + a.d +
+                    b.a + b.b + b.c + b.d;
+          }
+
+          let result = 0;
+
+          for (let i = 0; i < 1000000; i++) {
+            result += add(data1, data2);
+            result += add(data3, data4);
+          }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Если вместо этого передать объект не&nbsp;с&nbsp;формой, { x, y }а с&nbsp;формой { y, x }, движку нужно будет
+          отменить свое предположение, и&nbsp;функция внезапно станет значительно медленнее. Я&nbsp;собираюсь ограничить
+          свое объяснение здесь, потому что вам следует прочитать превосходный пост от&nbsp;mraleph , если
+          вы&nbsp;хотите больше подробностей, но&nbsp;я&nbsp;собираюсь подчеркнуть, что&nbsp;V8, в&nbsp;частности, имеет
+          3&nbsp;режима для доступа, которые являются: мономорфный (1&nbsp;форма), полиморфный (2-4&nbsp;формы)
+          и&nbsp;мегаморфный (5+&nbsp;форм). Допустим, вы&nbsp;действительно хотите остаться мономорфным, потому что
+          замедление будет радикальным:
+        </p>
+        <p>
+          Легче сказать, чем сделать, но: создайте все свои объекты с&nbsp;одинаковой формой . Даже что-то столь
+          тривиальное, как написание свойств компонента React в&nbsp;другом порядке, может вызвать это.
+        </p>
+        <p>
+          Например, вот простые случаи, которые я&nbsp;нашел в&nbsp;кодовой базе React, но&nbsp;у&nbsp;них уже был
+          случай с&nbsp;гораздо более сильным влиянием той&nbsp;же проблемы несколько лет назад, потому что они
+          инициализировали объект целым числом, а&nbsp;затем сохраняли число с&nbsp;плавающей точкой. Да, изменение типа
+          также меняет форму. Да, есть целые и&nbsp;плавающие типы, скрытые за&nbsp;number. Разберитесь с&nbsp;этим.
+        </p>
+        <p>
+          Движки обычно могут кодировать целые числа как значения. Например, V8&nbsp;представляет значения
+          в&nbsp;32&nbsp;битах, причем целые числа представляют собой компактные значения Smi (SMall Integer),
+          но&nbsp;числа с&nbsp;плавающей точкой и&nbsp;большие целые числа передаются как указатели, как строки
+          и&nbsp;объекты. JSC использует 64-битное кодирование, двойную маркировку , чтобы передавать все числа
+          по&nbsp;значению, как это делает SpiderMonkey, а&nbsp;остальное передается как указатели.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="megamorphic" percentage="4"></custom-scale>
+        <custom-scale name="polymorphic" percentage="13"></custom-scale>
+        <custom-scale name="monomorphism" percentage="95" winner="true"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex flex-col items-center">
+        <h2>
+          <span>[...] {...}</span> <br />
+          Избегайте методов<br />массивов/объектов
+        </h2>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Компитенция</h2>
+      <img
+        class="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]"
+        src="themes/tw/images/tips/skills-team/1.jpg"
+        alt="Изображение"
+        width="392"
+        height="137"
+      />
+      <img
+        class="next translate-x-[450px] translate-y-[150px] rotate-[30deg]"
+        src="themes/tw/images/tips/skills-team/2.jpg"
+        alt="Изображение"
+        width="356"
+        height="123"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const result =
+            [1.5, 3.5, 5.0]
+              .map(n => Math.round(n))
+              .filter(n => n % 2 === 0)
+              .reduce((a, n) => a + n, 0)
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Я&nbsp;люблю функциональное программирование так&nbsp;же, как и&nbsp;все остальные, но&nbsp;если
+          вы&nbsp;не&nbsp;работаете с&nbsp;Haskell/OCaml/Rust, где функциональный код компилируется в&nbsp;эффективный
+          машинный код, то&nbsp;функциональное программирование всегда будет медленнее императивного.
+        </p>
+        <p>
+          Проблема с&nbsp;этими методами заключается в&nbsp;следующем: Им&nbsp;нужно сделать полную копию массива,
+          и&nbsp;эти копии позже должны быть освобождены сборщиком мусора. Мы&nbsp;более подробно рассмотрим вопросы
+          ввода-вывода памяти в&nbsp;разделе 5. Они выполняют цикл&nbsp;N раз для&nbsp;N операций, тогда как for цикл
+          допускает выполнение цикла один раз.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Вводные
+          const numbers = Array.from({ length: 10_000 }).map(() => Math.random());
+
+          // 1. Декларативный подход
+          const result =
+            numbers.map(n => Math.round(n * 10))
+                    .filter(n => n % 2 === 0)
+                    .reduce((a, n) => a + n, 0);
+
+          // 2. Императивный подход
+          let result = 0;
+
+          for (let i = 0; i < numbers.length; i++) {
+            let n = Math.round(numbers[i] * 10);
+            if (n % 2 !== 0) continue;
+
+            result = result + n;
+          }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Методы объектов, такие как Object.values(), Object.keys()и Object.entries()страдают от&nbsp;похожих проблем,
+          поскольку они также выделяют больше данных, а&nbsp;доступ к&nbsp;памяти является корнем всех проблем с
+          производительностью.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="функциональный" percentage="36"></custom-scale>
+        <custom-scale name="императивный" percentage="97" winner="true"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Используйте строки<span class="next text-light-gray">, осторожно</span></h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const classNames = ['primary', 'selected', 'active', 'medium'];
+
+          // 1. Мутация
+          const result =
+            classNames
+              .map(c => `button--${c}`)
+              .join(' ');
+
+          // 2. concatenation
+          const result =
+            classNames
+              .map(c => 'button--' + c)
+              .reduce((acc, c) => acc + ' ' + c, '');
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          console.log({
+            EFFECTIVE_TYPES: navigator.connection.effectiveTypes,
+            DEVICE_MEMORY: navigator.deviceMemory,
+            HARDWARE_CONCURRENCY: navigator.hardwareConcurrency
+          });
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const large = Array.from({ length: 10_000 }).map(() => 'string').join('');
+          const small = large.slice(0, 50);
+        </code>
+      </pre>
+      <img
+        class="next absolute translate-x-[90px] translate-y-[290px]"
+        src="themes/tw/pictures/arrow.svg"
+        alt="Изображение"
+        aria-hidden="true"
+        width="32"
+        height="32"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // replace a token that doesn't exist
+          const small = small.replace('#'.repeat(small.length + 1), '')
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="mutation" percentage="37"></custom-scale>
+        <custom-scale name="concatenation" percentage="98" winner="true"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2 class="!m-0">Используйте eval</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/evil.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/evil.gif" alt="Изображение" width="52" height="52" />
+        </picture>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // С&nbsp;eval
+          const key = "requestId";
+          const values = Array.from({ length: 100_000 }).fill(42);
+
+          function createMessages(key, values) {
+            const messages = []
+            for (let i = 0; i < values.length; i++) {
+              messages.push({ [key]: values[i] })
+            }
+            return messages
+          }
+
+          createMessages(key, values);
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Некоторые шаблоны&nbsp;JS трудно оптимизировать для движков, и&nbsp;с&nbsp;помощью использования eval() или
+          его производных вы&nbsp;можете заставить эти шаблоны исчезнуть. В&nbsp;этом примере мы&nbsp;можем наблюдать,
+          как использование eval() позволяет избежать затрат на&nbsp;создание объекта с&nbsp;динамическим ключом
+          объекта.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Без eval
+          const key = "requestId";
+          const values = Array.from({ length: 100_000 }).fill(42)
+
+          function createMessages(key, values) {
+            const messages = [];
+            const createMessage = new Function('value',
+              `return { ${JSON.stringify(key)}: value }`
+            )
+            for (let i = 0; i < values.length; i++) {
+              messages.push(createMessage(values[i]))
+            }
+            return messages
+          }
+
+          createMessages(key, values)
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Другим хорошим вариантом использования eval может быть компиляция функции предиката фильтра, где вы
+          отбрасываете ветви, которые, как вы&nbsp;знаете, никогда не&nbsp;будут выполнены. В&nbsp;общем, любая функция,
+          которая будет запущена в&nbsp;очень горячем цикле, является хорошим кандидатом для такого рода оптимизации.
+        </p>
+        <p>
+          Очевидно, что обычные предупреждения eval()применимы: не&nbsp;доверяйте пользовательскому вводу, очищайте все,
+          что передается в&nbsp;eval()&rsquo;d-код, и&nbsp;не&nbsp;создавайте никаких возможностей XSS. Также обратите
+          внимание, что некоторые среды не&nbsp;разрешают доступ к&nbsp;eval(), например, страницы браузера с&nbsp;CSP.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="С eval" percentage="53"></custom-scale>
+        <custom-scale name="not eval" percentage="90" winner="true"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Косвенность</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/100.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/100.gif" alt="Изображение" width="32" height="32" />
+        </picture>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const point = new Proxy({ x: 10, y: 20 }, { get: (t, k) => t[k] });
+
+          for (let _ = 0, i = 0; i < 100_000; i++) {
+            _ += point.x;
+          };
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Прокси-бенчмарк особенно жесток на&nbsp;V8&nbsp;в данный момент. В&nbsp;последний раз, когда я&nbsp;проверял,
+          прокси-объекты всегда откатывались от&nbsp;JIT к&nbsp;интерпретатору, судя по&nbsp;этим результатам, это все
+          еще может быть так.
+        </p>
+        <p>
+          Я&nbsp;также хотел продемонстрировать доступ к&nbsp;глубоко вложенному объекту по&nbsp;сравнению с&nbsp;прямым
+          доступом, но&nbsp;движки очень хорошо оптимизируют доступ к&nbsp;удаленным объектам с&nbsp;помощью анализа
+          выхода, когда есть горячий цикл и&nbsp;постоянный объект. Я&nbsp;вставил немного косвенности, чтобы
+          предотвратить это.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const point = {
+            x: 10,
+            y: 20
+          };
+          const x = point.x;
+
+          for (let _ = 0, i = 0; i < 100_000; i++) {
+            _ += x;
+          };
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="proxy" percentage="2"></custom-scale>
+        <custom-scale name="direct" percentage="94" winner="true"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const a = { state: { center: { point: { x: 10, y: 20 } } } }
+          const b = { state: { center: { point: { x: 10, y: 20 } } } }
+          const get = (i) => i % 2 ? a : b;
+
+          let result = 0;
+          for (let i = 0; i < 100_000; i++) {
+            result = result + get(i).state.center.point.x }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // 2. direct access
+          const a = { x: 10, y: 20 }.x
+          const b = { x: 10, y: 20 }.x
+          const get = (i) => i % 2 ? a : b
+
+          let result = 0
+          for (let i = 0; i < 100_000; i++) {
+            result = result + get(i) }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="nested" percentage="42"></custom-scale>
+        <custom-scale name="direct" percentage="92" winner="true"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Специализация</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/turtle.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/turtle.gif" alt="Изображение" width="52" height="52" />
+        </picture>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // 1. not specialized
+          for (let i = 0; i < 100; i++) {
+            productsToString(descriptions, someTags)
+            productsToString(descriptions, noTags)
+            productsToString(descriptions, noTags)
+            productsToString(descriptions, noTags)
+            productsToString(descriptions, noTags)
+          }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Одной из&nbsp;важных концепций оптимизации производительности является специализация: адаптация вашей логики
+          для соответствия ограничениям вашего конкретного варианта использования. Обычно это означает выяснение того,
+          какие условия, скорее всего, будут верны для вашего случая, и&nbsp;кодирование для этих условий.
+        </p>
+        <p>
+          Допустим, мы&nbsp;торговец, которому иногда нужно добавлять теги в&nbsp;список продуктов. Мы&nbsp;знаем
+          по&nbsp;опыту, что наши теги обычно пустые. Зная эту информацию, мы&nbsp;можем специализировать нашу функцию
+          для этого случая.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // 2. specialized
+          for (let i = 0; i < 100; i++) {
+            productsToStringSpecialized(descriptions, someTags);
+            productsToStringSpecialized(descriptions, noTags);
+            productsToStringSpecialized(descriptions, noTags);
+            productsToStringSpecialized(descriptions, noTags);
+            productsToStringSpecialized(descriptions, noTags);
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const descriptions = ['apples', 'oranges', 'bananas', 'seven']
+          const someTags = {
+            apples: '::promotion::',
+          }
+          const noTags = {}
+
+          function productsToString(description, tags) {
+            let result = '';
+
+            description.forEach(product => {
+              result += product
+              if (tags[product]) result += tags[product]
+              result += ', '
+            });
+
+            return result;
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          function productsToStringSpecialized(description, tags) {
+            // Мы знаем, что `tags`, скорее всего, будет пустым, поэтому мы проверяем
+            // один раз заранее, а затем можем удалить проверку `if`
+            // из внутреннего цикла
+            if (isEmpty(tags)) {
+              let result = '';
+
+              description.forEach(product => {
+                result += product + ', ';
+              });
+
+              return result;
+            } else {
+              let result = '';
+
+              description.forEach(product => {
+                result += product
+                if (tags[product]) result += tags[product]
+                result += ', '
+              });
+
+              return result;
+            }
+          }
+
+          function isEmpty(o) {
+            for (let _ in o) {
+              return false;
+            }
+
+            return true;
+          }
+          </code>
+        </pre>
+      <footer>
+        <p>
+          Этот тип оптимизации может дать вам умеренные улучшения, но&nbsp;они будут накапливаться. Они являются хорошим
+          дополнением к&nbsp;более важным оптимизациям, таким как формы и&nbsp;ввод-вывод памяти. Но&nbsp;учтите, что
+          специализация может обернуться против вас, если ваши условия изменятся, поэтому будьте осторожны,
+          применяя&nbsp;ее.
+        </p>
+        <p>
+          Удаление ветвей из&nbsp;вашего кода может быть невероятно эффективным для производительности. Для получения
+          более подробной информации о&nbsp;том, что такое предиктор ветвлений, прочитайте классический ответ Stack
+          Overflow Почему обработка отсортированного массива быстрее.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="not specialized" percentage="82"></custom-scale>
+        <custom-scale name="specialized" percentage="100" winner="true"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Структуры данных</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/traces.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/traces.gif" alt="Изображение" width="52" height="52" />
+        </picture>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Вводные
+          const userIds = Array.from({ length: 1_000 }).map((_, i) => i)
+          const adminIdsArray = userIds.slice(0, 10)
+          const adminIdsSet = new Set(adminIdsArray)
+
+          // Array
+          let _ = 0;
+
+          for (let i = 0; i < userIds.length; i++) {
+            if (adminIdsArray.includes(userIds[i])) { _ += 1 }
+          }
+
+          // Set
+          let _ = 0;
+
+          for (let i = 0; i < userIds.length; i++) {
+            if (adminIdsSet.has(userIds[i])) { _ += 1 }
+          }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Я&nbsp;не&nbsp;буду вдаваться в&nbsp;подробности о&nbsp;структурах данных, так как они требуют отдельного
+          поста. Но&nbsp;имейте в&nbsp;виду, что использование некорректных структур данных для вашего варианта
+          использования может иметь большее влияние, чем любая из&nbsp;оптимизаций выше . Я&nbsp;бы посоветовал вам
+          ознакомиться с&nbsp;собственными, такими как Map и Set, и&nbsp;узнать о&nbsp;связанных списках, приоритетных
+          очередях, деревьях (RB&nbsp;и&nbsp;B+) и&nbsp;попытках.
+        </p>
+        <p>
+          Но&nbsp;для быстрого примера давайте сравним, как Array.includes работает функция against Set.has для
+          небольшого списка:
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="array" percentage="32"></custom-scale>
+        <custom-scale name="set" percentage="91" winner="true"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Избегайте крупных предметов</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/exclamation-mark.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/exclamation-mark.gif" alt="Изображение" width="52" height="52" />
+        </picture>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const USERS_LENGTH = 100_000;
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Вводные
+          const USERS_LENGTH = 1_000;
+
+          // setup:
+          const byId = {}
+          Array.from({ length: USERS_LENGTH }).forEach((_, id) => {
+            byId[id] = { id, name: 'John'}
+          })
+
+          let _ = 0;
+
+          // 1. [] access
+          Object.keys(byId).forEach(id => { _ += byId[id].id })
+
+          // 2. direct access
+          Object.values(byId).forEach(user => { _ += user.id })
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Как объяснялось в&nbsp;разделе&nbsp;2, движки используют формы для оптимизации объектов. Однако, когда форма
+          становится слишком большой, у&nbsp;движка нет выбора, кроме как использовать обычную хэш-карту (например, Map
+          объект). И&nbsp;как мы&nbsp;видели в&nbsp;разделе&nbsp;5, промахи кэша значительно снижают производительность.
+          Хэш-карты подвержены этому, потому что их&nbsp;данные обычно случайным образом и&nbsp;равномерно распределены
+          по&nbsp;области памяти, которую они занимают. Давайте посмотрим, как она ведет себя с&nbsp;этой картой
+          некоторых пользователей, индексированных по&nbsp;их&nbsp;идентификатору.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="[ ]" percentage="43"></custom-scale>
+        <custom-scale name="direct" percentage="88" winner="true"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Избегайте промахов кэша</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/fire.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/fire.gif" alt="Изображение" width="32" height="32" />
+        </picture>
+      </div>
+      <footer>
+        <p>
+          Этот момент требует некоторых низкоуровневых знаний, но&nbsp;имеет последствия даже в&nbsp;JS, поэтому
+          я&nbsp;объясню. С&nbsp;точки зрения&nbsp;ЦП, извлечение памяти из&nbsp;ОЗУ происходит медленно. Для ускорения
+          используются в&nbsp;основном две оптимизации.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Вводные
+          const K = 1024;
+          const length = 1 * K * K;
+
+          // Последовательно в памяти
+          const points = new Array(length);
+
+          for (let i = 0; i < points.length; i++) {
+            points[i] = {
+              x: 42,
+              y: 0
+            }
+          }
+
+          // Хаотично в памяти
+          const shuffledPoints = shuffle(points.slice());
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Первый&nbsp;&mdash; предварительная выборка: она заранее извлекает больше памяти в&nbsp;надежде, что это
+          именно та&nbsp;память, которая вас заинтересует. Она всегда предполагает, что если вы&nbsp;запросите один
+          адрес памяти, вас заинтересует область памяти, которая идет сразу за&nbsp;ним. Поэтому последовательный доступ
+          к&nbsp;данным&nbsp;&mdash; это ключ. В&nbsp;следующем примере мы&nbsp;можем наблюдать влияние доступа
+          к&nbsp;памяти в&nbsp;случайном порядке.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // from this
+          const points = [{ x: 0, y: 5 }, { x: 0, y: 10 }]
+
+          // to this
+          const points = new Int64Array([0, 5, 0, 10])
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Этот аспект, вероятно, сложнее всего реализовать на&nbsp;практике, поскольку JS не&nbsp;имеет способа
+          размещения объектов в&nbsp;памяти, но&nbsp;вы&nbsp;можете использовать это знание в&nbsp;своих интересах, как
+          в&nbsp;примере выше, например, для работы с&nbsp;данными перед их&nbsp;переупорядочением или сортировкой.
+          Вы&nbsp;не&nbsp;можете предполагать, что объекты, созданные последовательно, останутся в&nbsp;том&nbsp;же
+          месте через некоторое время, потому что сборщик мусора может переместить&nbsp;их. Есть одно исключение
+          из&nbsp;этого, и&nbsp;это массивы чисел, предпочтительно TypedArray экземпляры:
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Последовательно
+          let _ = 0;
+
+          for (let i = 0; i < points.length; i++) {
+            _ += points[i].x;
+          }
+
+          // Рандом
+          let _ = 0;
+
+          for (let i = 0; i < shuffledPoints.length; i++) {
+            _ += shuffledPoints[i].x;
+          }
+          </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Результат выполнения</h2>
+      <div class="place flex w-[50%] flex-col gap-4">
+        <custom-scale name="sequential" percentage="87" winner="true"></custom-scale>
+        <custom-scale name="random" percentage="26"></custom-scale>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Что там в&nbsp;бандле?</h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <img src="themes/tw/images/tips/bundle.jpg" alt="Изображение" width="500" height="500" />
+    </section>
+
+    <section class="slide">
+      <h2>Памятка</h2>
+      <ul>
+        <li class="next">
+          выбрать метрики, которыми можно можно охарактериозовать &laquo;степень оптимальности&raquo; нашего сайта или
+          приложения
+        </li>
+        <li class="next">найти код сильене всего ухудшающий метрики</li>
+        <li class="next">внести изменния в&nbsp;код</li>
+        <li class="next">измерить новые значения</li>
+        <li class="next">повторить</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Если оптимизировать невозможно</h2>
+      <ul>
+        <li>использовать обратную связь (спиннеры, заблокированные кнопки)</li>
+        <li>
+          использовать особенности восприятия (приветственный экран Apple&nbsp;&mdash; муляж, фотография последнего
+          экрана)
+        </li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <img class="place rounded-sm" src="themes/tw/images/preview/npm.jpg" alt="Изображение" width="914" height="440" />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/pagespeed.jpg"
+        alt="Изображение"
+        width="2143"
+        height="1438"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/shared/tools/browser.jpg"
+        alt="Изображение"
+        width="3800"
+        height="2141"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/cases/2pdf.jpg"
+        alt="Изображение"
+        width="3840"
+        height="2208"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/cases/list/1.jpg"
+        alt="Изображение"
+        width="2624"
+        height="1932"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/cases/list/2.jpg"
+        alt="Изображение"
+        width="2624"
+        height="1932"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/cases/list/3.jpg"
+        alt="Изображение"
+        width="2624"
+        height="1104"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">2pdf промо</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/cases/2pdf-promo.jpg"
+        alt="Изображение"
+        width="3200"
+        height="2080"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Версии браузеров</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/preview/browser-versions.jpg"
+        alt="Изображение"
+        width="2560"
+        height="560"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Test</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/statham.jpg"
+        alt="Изображение"
+        width="280"
+        height="520"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">CPU</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/preview/cpu.jpg"
+        alt="Изображение"
+        width="560"
+        height="1320"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Настройки</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/settings.jpg"
+        alt="Изображение"
+        width="560"
+        height="1276"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Spark blug</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/v8/spark-blug.jpg"
+        alt="Изображение"
+        width="500"
+        height="200"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">UJ</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/basics/user-joy.jpg"
+        alt="Изображение"
+        width="520"
+        height="1754"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Howfat</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/shared/tools/howfat.jpg"
+        alt="Изображение"
+        width="2308"
+        height="1356"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Memory error</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/preview/memory-error.jpg"
+        alt="Изображение"
+        width="762"
+        height="636"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Память</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/performance/memory.jpg"
+        alt="Изображение"
+        width="800"
+        height="328"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Профиль</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/performance/heap-profile.jpg"
+        alt="Изображение"
+        width="800"
+        height="870"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Base</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/possibilities/dev-tools/performance/base.jpg"
+        alt="Изображение"
+        width="842"
+        height="160"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>Удаленная отладка Android-устройств (about:inspect)</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        href="https://developer.chrome.com/docs/devtools/remote-debugging?hl=ru"
+      >
+        remote-debugging
+      </a>
+    </section>
+
+    <section class="slide">
+      <h2>node &mdash;cpu-prof $(which npm) run script</h2>
+    </section>
+
+    <section class="slide">
+      <h2>chrome://inspect</h2>
+    </section>
+
+    <section class="slide">
+      <h2>node -inspect-brk</h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          if (person?.isActive) {
+            console.log('Пользователь активен');
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          if (person !== null && person !== void 0 && person.isActive) {
+            console.log('Пользователь активен');
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          if (person && person.isActive) {
+            console.log('Пользователь активен');
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const items = await getItems()
+
+          for (let item of items) {
+            await processItem(item)
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const items = await getItems()
+          await Promise.all(items.map(processItem))
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">В&nbsp;чём разница между типом и&nbsp;интерфейсом?</h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Что быстрее типы или интерфейсы?</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://github.com/microsoft/TypeScript/wiki/Performance"
+        >Performance</a
+      >
+      <!-- закон Мура -->
+      <!-- https://www.youtube.com/watch?v=yR8yX1sIcTA -->
+      <footer>
+        <p>Отношения типов между интерфейсами кешируется, в&nbsp;отличие от&nbsp;типов пересечения.</p>
+        <p>
+          Добавление аннотаций типов, особенно возвращаемых типов, может сэкономить компилятору много работы. Отчасти
+          это связано с&nbsp;тем, что именованные типы, как правило, более компактны, чем анонимные типы (которые
+          компилятор может вывести), что сокращает время, затрачиваемое на&nbsp;чтение и&nbsp;запись файлов объявлений
+          (например, для инкрементных сборок). Вывод типов очень удобен, поэтому нет необходимости делать это
+          повсеместно&nbsp;&mdash; однако, это может быть полезно, если вы&nbsp;определили медленный раздел своего кода.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          interface SomeType&lt;T&gt; {
+            foo&lt;U&gt;(x: U):
+                U extends TypeA&lt;T&gt; ? ProcessTypeA&lt;U, T&gt; :
+                U extends TypeB&lt;T&gt; ? ProcessTypeB&lt;U, T&gt; :
+                U extends TypeC&lt;T&gt; ? ProcessTypeC&lt;U, T&gt; :
+                U;
+
+                          type FooResult&lt;U, T> =
+            U extends TypeA&lt;T&gt; ? ProcessTypeA&lt;U, T> :
+            U extends TypeB&lt;T&gt; ? ProcessTypeB&lt;U, T> :
+            U extends TypeC&lt;T&gt; ? ProcessTypeC&lt;U, T> :
+            U;
+
+        interface SomeType&lt;T> {
+            foo&lt;U>(x: U): FooResult&lt;U, T>;
+        }
+        }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Сложные типы можно записывать везде, где разрешена аннотация типа. Это удобно, но&nbsp;сегодня, каждый раз,
+          foo когда вызывается, TS&nbsp;должен повторно запустить условный тип. Более того, связывание любых двух
+          экземпляров SomeType требует повторного связывания структуры возвращаемого типа foo. Если возвращаемый тип
+          в&nbsp;этом примере был извлечен в&nbsp;псевдоним типа, компилятор может кэшировать больше информации.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          // Норм
+          type Foo = Bar & Baz & {
+            someProp: string;
+          }
+
+          // Лучше
+          interface Foo extends Bar, Baz {
+            someProp: string;
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Использование аннотирования</h2>
+      <pre>
+        <code class="language-typescript">
+          // Норм
+          import { otherFunc } from "other";
+
+          export function func() {
+            return otherFunc();
+          }
+
+          // Лучше
+          import { otherFunc, OtherType } from "other";
+
+          export function func(): OtherType {
+            return otherFunc();
+          }
+        </code>
+      </pre>
+      <img
+        class="next absolute translate-x-[650px] translate-y-[290px]"
+        src="themes/tw/pictures/arrow.svg"
+        alt="Изображение"
+        aria-hidden="true"
+        width="132"
+        height="132"
+      />
+    </section>
+
+    <section class="slide">
+      <h2>Контроль за&nbsp;типами</h2>
+      <pre>
+        <code class="language-typescript">
+          // src/tsconfig.json
+          {
+              "compilerOptions": {
+                  // Don't automatically include anything.
+                  // Only include `@types` packages that we need to import.
+                  "types" : []
+              },
+              "files": ["foo.ts"]
+          }
+
+          // tests/tsconfig.json
+          {
+              "compilerOptions": {
+                  // Only include `@types/node` and `@types/mocha`.
+                  "types" : ["node", "mocha"]
+              },
+              "files": ["foo.test.ts"]
+          }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          По&nbsp;умолчанию <i>ts</i>&nbsp;автоматически включает каждый <i>@types</i> пакет, который он&nbsp;находит
+          в&nbsp;вашей <i>node_modules</i> папке, независимо от&nbsp;того, импортируете&nbsp;ли вы&nbsp;его. Это сделано
+          для того, чтобы определенные вещи &laquo;просто работали&raquo; при использовании <i>Node.js</i>,
+          <i>Jasmine</i>, <i>Mocha</i>, Chai и&nbsp;т.&nbsp;д., поскольку эти инструменты/пакеты
+          не&nbsp;импортируются&nbsp;&mdash; они просто загружаются в&nbsp;глобальную среду.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Strict</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          {
+            "compilerOptions": {
+              "strict": true,
+            },
+          }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Это заставляет&nbsp;TS перехватывать больше ошибок во&nbsp;время компиляции, что, хотя это может показаться
+          нелогичным, на&nbsp;самом деле может повысить производительность.
+        </p>
+        <p>
+          Строго типизированный код может быть легче оптимизирован движками&nbsp;JS, а&nbsp;раннее обнаружение ошибок
+          также означает меньше времени, затрачиваемого на&nbsp;отладку.
+        </p>
+        <p>Это может быть полезно как для разработки, так и&nbsp;для производительности во&nbsp;время выполнения.</p>
+        <p>
+          Если вы&nbsp;ориентируетесь на&nbsp;современные браузеры, вы&nbsp;можете выбрать &laquo;ES2018&raquo; или
+          &laquo;ES2019&raquo;, что может привести к&nbsp;более эффективному выводу, чем старые версии, такие как
+          &laquo;ES5.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">d.ts</h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">TS&nbsp;производительность</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/tips/ts/performance.jpg"
+        width="701"
+        height="996"
+        alt="Изображение"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Щипотка реакта × тайпскрипта</h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+      <code class="language-typescript">
+        import { HTMLAttributes } from "react";
+
+        type InputProps = HTMLAttributesHTMLInputElement & {
+          variant: 'base' | 'custom';
+        };
+
+        const Input = ({ variant, ...props }: InputProps) => {
+          console.log({ variant });
+
+          return input {...props}
+        };
+      </code>
+    </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          import React from "react";
+
+          interface ButtonProps extends React.HTMLAttributes&lt;HTMLButtonElement&gt; {
+            extraProp: string;
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          import { MouseEvent } from "react";
+
+          &lt;Input
+                extraProp="base"
+                onClick={(event) => {
+                        // ^ event: MouseEvent&lt;HTMLButtonElement&gt;, MouseEvent
+                }}
+          / &gt;
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">JS&nbsp;vs&nbsp;TS</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://programming-language-benchmarks.vercel.app/typescript-vs-javascript"
+        >TS vs&nbsp;JS</a
+      >
+    </section>
+
+    <section class="slide clear">
+      <h2 class="cover left-0 mt-[24px] -translate-y-[50%] pl-[120px] text-left">
+        <span class="text-light-gray">Акт 4</span>
+        <br />
+        <span>Кейсы</span>
+      </h2>
+      <footer>
+        <p>Де-факто.</p>
+        <p>Необходимо регулярное проводить аудит сайтов на&nbsp;предмет потери производительности.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Википедия</h2>
+      <img class="place rounded-sm" src="themes/tw/images/cases/wiki.jpg" alt="Изображение" width="500" height="100" />
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://nolanlawson.com/2024/09/18/improving-rendering-performance-with-css-content-visibility"
+        >Improving rendering performance with css content visibility
+      </a>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Lessons learned from 222,557 font file subsets?</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://www.phpied.com/lessons-learned-from-222557-font-file-subsets"
+      >
+        Font file subsets
+      </a>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">How I&nbsp;Created a&nbsp;3.78MB Docker Image for a&nbsp;JS&nbsp;Service</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        class="copyright"
+        href="https://shenzilong.cn/record/How%20I%20Created%20a%203.78MB%20Docker%20Image%20for%20a%20JavaScript%20Service"
+        >How I&nbsp;Created a&nbsp;3.78MB Docker Image for a&nbsp;JS Service</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Analyzing Notion app performance</h2>
+      <a rel="noopener noreferrer" target="_blank" class="copyright" href="https://3perf.com/blog/notion">Notion</a>
+    </section>
+
+    <section class="slide">
+      <h2>Building Reddit’s Frontend with Vite</h2>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        href="https://www.reddit.com/r/RedditEng/comments/1dhztk8/building_reddits_frontend_with_vite/?rdt=55486"
+        >Статья</a
+      >
+      <footer>
+        <p>Кто смотрел фильм &laquo;Иссходный код&raquo;.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Notion уменьшила задержку на&nbsp;20% с&nbsp;кэшированием</h2>
+      <a
+        class="copyright"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://blog.quastor.org/p/notion-decreased-latency-20-caching-40c7?_bhlid=9dc7c5eafdb7c1ace16ba521b74792a35e9807c6"
+        >Notion decreased latency 20&nbsp;caching</a
+      >
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Code Run</h2>
+        <img class="ml-4" src="themes/tw/images/shared/companies/yandex.svg" alt="Изображение" width="52" height="52" />
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Code run</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/cases/code-run/format.jpg"
+        alt="Изображение"
+        width="802"
+        height="438"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Code run</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/cases/code-run/restrictions.jpg"
+        alt="Изображение"
+        width="839"
+        height="202"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          module.exports = function(N, staff, K) {
+            staff.sort((a, b) => b - a);
+
+            let sum = 0;
+
+            for (let = 0; i < Math.min(K, N); i++) {
+              sum += staff[i];
+            }
+
+            return sum;
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript !text-[14px] !leading-5">
+          module.exports = function(N, staff, K) {
+            let count = new Array(26).fill(0);
+            let maxGrade = 0;
+            let keyboardsUsed = 0;
+            ley grade = 25;
+
+            for (let i = 0; i < N; i++) {
+              count[staff[i]]++;
+            }
+
+            while (keyboardUsed < K) {
+              if (count[grade] > 0) {
+                maxGrade += grade;
+                count[grade]--;
+                keyboardUsed++;
+              } else {
+                grade--;
+              }
+            }
+
+            return maxGrade;
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          …it is a garbage garbage-collected language. It has performance uncertainty.
+Performance unpredictability is one way to put it, where you may be giving
+something at 60 frames a second for a game and suddenly, you run out of real-
+^me because of a garbage collec^on that has to happen to reclaim memory
+
+Брендан Айк, создатель JS в одном из недавних подкастов
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">CLS</h2>
+      <img class="place rounded-sm" src="themes/tw/images/cases/CLS.jpg" alt="Изображение" width="1200" height="100" />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">OCF</h2>
+      <video
+        muted
+        disablepictureinpicture
+        preload="metadata"
+        width="700"
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/cases/ocf.jpg"
+      >
+        <source src="themes/tw/video/cases/ocf.mp4" type="video/mp4" />
+      </video>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Registry</h2>
+      <video
+        muted
+        disablepictureinpicture
+        width="700"
+        preload="metadata"
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/cases/registry.jpg"
+      >
+        <source src="themes/tw/video/cases/registry.mp4" type="video/mp4" />
+      </video>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Ncode</h2>
+      <video
+        muted
+        disablepictureinpicture
+        width="700"
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        preload="metadata"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/cases/ncode.jpg"
+      >
+        <source src="themes/tw/video/cases/ncode.mp4" type="video/mp4" />
+      </video>
+    </section>
+
+    <section class="slide">
+      <h2>Кто помог?</h2>
+      <ul>
+        <li>
+          CSS:
+          <a rel="noopener noreferrer" target="_blank" href="https://doka.guide/css/will-change">will-change</a>
+        </li>
+        <li>
+          JS:
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame"
+            >requestAnimationFrame()</a
+          >
+        </li>
+        <li>transform: translate3d(0, 0, 0)</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Муз Союз</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/cases/muz-souz.jpg"
+        alt="Изображение"
+        width="800"
+        height="500"
+      />
+      <footer>
+        <p>
+          Полная загрузка&nbsp;&mdash; например, когда все пользовательские альбомы перечислены в&nbsp;музыкальном
+          плеере.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Сколково</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/images/cases/skolkovo-map.jpg"
+        alt="Изображение"
+        width="1907"
+        height="846"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          myMap.geoObjects.add(myPlacemark)
+
+          window.objectManager.add(featureCollection);
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Маэстро Дент</h2>
+      <video
+        muted
+        disablepictureinpicture
+        preload="metadata"
+        width="700"
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/cases/maestrodent.jpg"
+      >
+        <source src="themes/tw/video/cases/maestro-dent.mp4" type="video/mp4" />
+      </video>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">DoubleB</h2>
+      <video
+        muted
+        disablepictureinpicture
+        preload="metadata"
+        width="700"
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/cases/doubleb.jpg"
+      >
+        <source src="themes/tw/video/cases/doubleb.mp4" type="video/mp4" />
+      </video>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Код</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          const requestAnimationFrame =
+            typeof window !== "undefined"
+                ? (window.requestAnimationFrame &&
+                      window.requestAnimationFrame.bind(window))
+                  window.webkitRequestAnimationFrame
+                  window.mozRequestAnimationFrame
+                  rafPolyfill
+                : global.requestAnimationFrame  rafPolyfill;
+
+        const cancelAnimationFrame =
+            typeof window !== "undefined"
+                ? window.cancelAnimationFrame
+                  window.webkitCancelAnimationFrame
+                  window.mozCancelAnimationFrame
+                  cafPolyfill
+                : global.cancelAnimationFrame  cafPolyfill;
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Greencof</h2>
+      <video
+        muted
+        disablepictureinpicture
+        preload="metadata"
+        width="700"
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/cases/greencof.jpg"
+      >
+        <source src="themes/tw/video/cases/greencof.mp4" type="video/mp4" />
+      </video>
+      <footer>
+        <p>Ненужные повторные рендеры&nbsp;&mdash; молчаливые убийцы производительности.</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">MSC</h2>
+      <video
+        muted
+        disablepictureinpicture
+        preload="metadata"
+        width="700"
+        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[#000] object-cover"
+        controlslist="nofullscreen nodownload noremoteplayback noplaybackrate foobar"
+        poster="themes/tw/images/promo/cases/msc.jpg"
+      >
+        <source src="themes/tw/video/cases/msc.mp4" type="video/mp4" />
+      </video>
+    </section>
+
+    <section class="slide">
+      <h2>Long task (> 50 ms)</h2>
+      <pre class="place">
+        <code class="language-typescript">
+          setTimeout(() => {
+            processNextBatch();
+          }, 0);
+
+          // New approach with scheduler.yield()
+          await scheduler.yield();
+          processNextBatch();
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Традиционный setTimeout подход к передаче основного потока не имеет гранулярного контроля и правильной
+          расстановки приоритетов. API-интерфейс Scheduler устраняет эти недостатки, предлагая более надежное решение.
+        </p>
+        <p>
+          API планировщика предлагает два основных метода для лучшего контроля: yield()и postTask(). Более простой
+          yield()метод обеспечивает простой способ приостановки выполнения.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <pre class="place">
+        <code class="language-typescript">
+          await scheduler.postTask(() => {
+            processNextBatch() },
+            { priority: 'background' }
+          );
+        </code>
+      </pre>
+      <footer>
+        <p>Для более сложных сценариев postTask()позволяет использовать планирование на основе приоритетов:</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <pre class="place">
+        <code class="language-typescript">
+          enum TaskPriority {
+            "user-blocking",
+            "user-visible",
+            "background"
+          };
+        </code>
+      </pre>
+      <footer>
+        <p>
+          user-blocking: Задачи, которые блокируют основной поток и&nbsp;требуют немедленного внимания. Например,
+          обработка пользовательского ввода или обновление пользовательского интерфейса.
+        </p>
+        <p>
+          user-visible: Задачи, которые важны, но&nbsp;не&nbsp;так срочны, как user-blockingзадачи. Например, получение
+          данных для следующего экрана.
+        </p>
+        <p>
+          background: Задачи, которые могут выполняться в&nbsp;фоновом режиме, не&nbsp;влияя на&nbsp;работу
+          пользователя. Например, предварительная загрузка активов или выполнение аналитики.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <ul>
+        <li>Управление несколькими задачами с&nbsp;помощью приоритетов</li>
+        <li>Динамические изменения приоритета</li>
+        <li>Отмена задач</li>
+        <li>Поддержка браузеров и&nbsp;резервный шаблон</li>
+      </ul>
+      <footer>
+        <p>Слайд выглядит как список то&nbsp;что входит в&nbsp;платный тариф</p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <pre>
+        <code>
+          script type="speculationrules">
+            {
+              "prefetch": [
+                {
+                  "source": "list",
+                  "urls": ["/about", "/contact"]
+                }
+              ]
+            }
+          script
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Baseline</h2>
+      <baseline-status inert class="place w-full rounded-sm bg-white" featureId="scheduler"></baseline-status>
+    </section>
+
+    <section class="slide">
+      <pre class="place">
+        <code>
+          const boxOffsetHeight = box.offsetHeight;
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>10 100 - гугол</h2>
+    </section>
+
+    <section class="slide clear">
+      <h2 class="place !left-0 mt-[24px] -translate-y-[50%] pl-[100px] text-left">
+        <span class="text-light-gray">Акт 4</span>
+        <br />
+        <span>Выводы</span>
+      </h2>
+      <footer>
+        <p>
+          Советы по&nbsp;производительности вызывают привыкание, и&nbsp;иногда сосредоточение внимания сначала
+          на&nbsp;более глубоких советах может сильно отвлечь от&nbsp;реальных проблем. Вам необходимо получить
+          целостное представление о производительности вашего веб-приложения&nbsp;&mdash; прежде чем сосредоточиться
+          на&nbsp;этих советах по&nbsp;производительности, вам, вероятно, следует проанализировать свой код
+          с&nbsp;помощью таких инструментов, как PageSpeed , и&nbsp;получить оценку. Это поможет вам избежать
+          преждевременной оптимизации.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Мем</h2>
+      <img
+        class="place rounded-sm"
+        src="themes/tw/pictures/memes/klitschko.jpg"
+        alt="Изображение"
+        width="525"
+        height="340"
+      />
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">
+        performance
+        <span class="next text-red">
+          <picture class="inline-block">
+            <source srcset="themes/tw/pictures/emoji/exclamation-mark.webp" type="image/webp" />
+            <img src="themes/tw/pictures/emoji/exclamation-mark.gif" alt="Изображение" width="32" height="32" />
+          </picture>
+          <picture class="inline-block">
+            <source srcset="themes/tw/pictures/emoji/rocket.webp" type="image/webp" />
+            <img src="themes/tw/pictures/emoji/rocket.gif" alt="Изображение" width="32" height="32" />
+          </picture>
+          important
+        </span>
+      </h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">
+        Тестируйте много раз и&nbsp;в&nbsp;разных браузерах<span class="next text-light-gray"
+          >, но&nbsp;помните, что погоня за&nbsp;каждой незначительной оптимизацией&nbsp;&mdash; это ловушка</span
+        >
+      </h2>
+      <footer>
+        <p>
+          Не&nbsp;тратьте время на&nbsp;оптимизацию частей вашего приложения, если нет доказательств, что они работают
+          медленно.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Чтобы прилетало меньше багов</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/air.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/air.gif" alt="Изображение" width="52" height="52" />
+        </picture>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="shout flex items-center justify-center">
+        <h2>Ваша система&nbsp;&mdash; ответственность надолго</h2>
+        <picture>
+          <source srcset="themes/tw/pictures/emoji/diamond.webp" type="image/webp" />
+          <img src="themes/tw/pictures/emoji/diamond.gif" alt="Изображение" width="32" height="32" />
+        </picture>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">Бесплатных функций в&nbsp;программных продуктах не&nbsp;бывает</h2>
+      <footer>
+        <p>Удалите ненужные функции.</p>
+        <p>
+          Если вы&nbsp;не&nbsp;можете удалить фрагмент кода, постарайтесь выполнять его реже Ваш код работает в&nbsp;том
+          числе за&nbsp;счет простого повторения операций, но&nbsp;тут легко переборщить и&nbsp;начать выполнять
+          их&nbsp;чаще необходимого.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout">
+        20% усилий <span class="next"><span class="text-orange">=</span> 80% результата</span>
+      </h2>
+    </section>
+
+    <section class="slide">
+      <h2 class="shout !text-5xl">
+        производительность
+        <span class="bold text-orange">===</span> продуктивность
+      </h2>
+    </section>
+
+    <section class="slide clear">
+      <div class="h-full">
+        <div class="mb-[150px] flex items-center justify-center">
+          <h2>Спасибо за&nbsp;внимание!</h2>
+          <picture>
+            <source srcset="themes/tw/pictures/emoji/finish.webp" type="image/webp" />
+            <img src="themes/tw/pictures/emoji/finish.gif" alt="Изображение" width="52" height="52" />
+          </picture>
+        </div>
+        <div class="columns two">
+          <div class="m-auto">
+            <a href="https://d-rusakov-wp.github.io/perf" rel="noopener noreferrer" target="_blank">
+              <img src="themes/tw/images/conclusions/qr-code-form.svg" alt="Изображение" width="250" height="250" />
+            </a>
+            <h3 class="text-center">Доклад</h3>
+          </div>
+          <div class="m-auto">
+            <a href="https://d-rusakov-wp.github.io/perf" rel="noopener noreferrer" target="_blank">
+              <img
+                src="themes/tw/images/conclusions/qr-code-presentation.svg"
+                alt="Изображение"
+                width="250"
+                height="250"
+              />
+            </a>
+            <h3 class="text-center">Обратная связь</h3>
+            <!-- https://almanac.httparchive.org/ru/2024/table-of-contents -->
+            <!-- https://2023.stateofjs.com/en-US/other-tools/#libraries -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide clear">
+      <div class="shout">
+        <div class="dots relative m-auto mb-2 h-[46px] w-[52px] text-white before:animate-jump"></div>
+        <h2 class="!mt-0 text-center">Вопросы</h2>
+      </div>
+    </section>
+
+    <script src="shower/shower.js"></script>
+
+    <script src="themes/tw/packages/highlight/highlight.min.js"></script>
+    <script type="module" src="themes/tw/packages/highlight/init.js"></script>
+    <script type="module" src="themes/tw/packages/custom-scale.js"></script>
+    <script type="module" src="themes/tw/packages/playing-video.js"></script>
+    <script type="module" src="themes/tw/packages/upload-iframe.js"></script>
+    <script type="module" src="themes/tw/packages/baseline-status.min.js"></script>
+  </body>
+</html>
