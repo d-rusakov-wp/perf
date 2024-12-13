@@ -279,6 +279,9 @@
         style="opacity: 50%"
         alt="Изображение"
       />
+      <footer>
+        <p>Будет немного цифр.</p>
+      </footer>
     </section>
 
     <section class="slide">
@@ -632,6 +635,17 @@
     </section>
 
     <section class="slide">
+      <h2>Шаблоны веб-показателей</h2>
+      <a
+        class="copyright"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://web.dev/patterns/web-vitals-patterns?hl=ru"
+        >https://web.dev/patterns/web-vitals-patterns?hl=ru</a
+      >
+    </section>
+
+    <section class="slide">
       <h2>Метрики Core Web Vitals</h2>
       <div class="columns two">
         <ul>
@@ -642,12 +656,12 @@
           <li class="next">
             <span class="text-orange">INP</span>
           </li>
+          <li class="next"><span class="text-orange">FCP</span></li>
         </ul>
         <ul>
           <li class="next">TTFB</li>
           <li class="next">SI</li>
           <li class="next">FP</li>
-          <li class="next">FCP</li>
           <li class="next"><s>FID</s>&nbsp;TBT</li>
           <li class="next">TTI</li>
         </ul>
@@ -698,6 +712,19 @@
       <a href="https://web.dev/vitals-business-impact" class="copyright" target="_blank" rel="noopener noreferrer"
         >The business impact of&nbsp;Core Web Vitals</a
       >
+    </section>
+
+    <section class="slide">
+      <h2>Продуктовые метрики и воронки пользователей</h2>
+    </section>
+
+    <section class="slide">
+      <h2>Lazy middlewar'ы</h2>
+      <ul>
+        <li>Выносим асинхронные функции в отдельные модули</li>
+        <li>Обращаемся к ним через ленивые импорты</li>
+        <li>Настраиваем предзагрузку важных частей</li>
+      </ul>
     </section>
 
     <section class="slide">
@@ -1965,6 +1992,9 @@
           Если код Baseline выполняется некоторое время, SpiderMonkey в конечном итоге запускает фронтенд IonMonkey и запускает оптимизатор — очень похоже на V8. Он продолжает работать в Baseline, пока IonMonkey оптимизирует. Наконец, когда оптимизатор завершает работу, оптимизированный код выполняется вместо кода Baseline.
         </code>
       </pre>
+      <footer>
+        <p>Порядок загрузки ресурсов важен.</p>
+      </footer>
     </section>
 
     <section class="slide">
@@ -2230,7 +2260,7 @@
       <h2 class="cover left-0 mt-[24px] -translate-y-[50%] pl-[120px] text-left">
         <span class="text-light-gray">Акт 3</span>
         <br />
-        <span>Набор приёмов&nbsp;/ советов</span>
+        <span>Набор приёмов&nbsp;/ советов (proposal)</span>
       </h2>
     </section>
 
@@ -4748,7 +4778,11 @@ something at 60 frames a second for a game and suddenly, you run out of real-
     </section>
 
     <section class="slide">
-      <h2>console.log(box.offsetHeight)</h2>
+      <pre class="place">
+        <code>
+          const boxOffsetHeight = box.offsetHeight;
+        </code>
+      </pre>
     </section>
 
     <section class="slide">

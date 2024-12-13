@@ -1,5 +1,5 @@
 function stopVideo(video) {
-  video.pause();
+  video.pause().catch(console.error);
   video.currentTime = 0;
 }
 
@@ -31,10 +31,10 @@ function initObservers(slidesWithVideo) {
       const hasFull = window.location.search.includes("full");
 
       if (entry.isIntersecting && hasFull) {
-        element.play();
+        element.play().catch(console.error);
 
         if (element.dataset.loop) {
-          element.setAttribute("loop");
+          element.setAttribute("loop", "");
         }
 
         return;
