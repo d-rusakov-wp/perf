@@ -4,11 +4,11 @@
 
 <img align="right" src="./themes/tw/images/logo.png" width="100" height="100" alt="Логотип" title="Логотип">
 
-- [Базовые принципы](https://d-rusakov-wp.github.io/perf/11)
-- [Возможности](https://d-rusakov-wp.github.io/perf/22)
-- [Набор приемов/советов](https://d-rusakov-wp.github.io/perf/33)
-- [Кейсы](https://d-rusakov-wp.github.io/perf/44)
-- [Выводы](https://d-rusakov-wp.github.io/perf/55)
+- [Базовые принципы](https://d-rusakov-wp.github.io/perf/?full=11)
+- [Возможности](https://d-rusakov-wp.github.io/perf/?full=22)
+- [Набор приемов/советов](https://d-rusakov-wp.github.io/perf/?full=33)
+- [Кейсы](https://d-rusakov-wp.github.io/perf/?full=44)
+- [Выводы](https://d-rusakov-wp.github.io/perf/?full=55)
 
 ## 🐱‍💻 Команды
 
