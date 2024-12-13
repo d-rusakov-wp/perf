@@ -1,8 +1,16 @@
 ![Deploy status](https://github.com/d-rusakov-wp/perf/actions/workflows/deploy.yml/badge.svg?branch=main&event=push)
 
-<img src="./themes/tw/images/logo.png" width="100" height="100" alt="Логотип" title="Логотип">
+# Семь раз отмерь, один раз оптимизируй
 
-# Доклад: «Семь раз отмерь, один раз оптимизируй»
+> Доклад о производительности
+
+<img align="right" src="./themes/tw/images/logo.png" width="100" height="100" alt="Логотип" title="Логотип">
+
+<br>
+<br>
+<br>
+<br>
+<br>
 
 📖 [Структура](./docs/structure.md)
 
