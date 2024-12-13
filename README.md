@@ -1,8 +1,6 @@
 ![Deploy status](https://github.com/d-rusakov-wp/perf/actions/workflows/deploy.yml/badge.svg?branch=main&event=push)
 
-# Семь раз отмерь, один раз оптимизируй
-
-> Доклад о производительности
+# Доклад: «Семь раз отмерь, один раз оптимизируй»
 
 <img align="right" src="./themes/tw/images/logo.png" width="100" height="100" alt="Логотип" title="Логотип">
 
