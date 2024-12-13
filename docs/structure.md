@@ -13,10 +13,10 @@ flowchart TB
       direction LR
 
       fonts --> styles
-      styles --> index.html
       images --> index.html
-      libs --> index.html
+      packages --> index.html
       pictures --> index.html
+      styles --> index.html
       video --> index.html
     end
   end

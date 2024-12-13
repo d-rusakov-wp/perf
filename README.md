@@ -1,8 +1,12 @@
-# Доклад: «Семь раз отмерь, один раз оптимизируй»
-
-<img src="./themes/tw/images/logo.png" width="150" height="150" alt="Логотип">
-
 ![Deploy status](https://github.com/d-rusakov-wp/perf/actions/workflows/deploy.yml/badge.svg?branch=main&event=push)
+
+# Семь раз отмерь, один раз оптимизируй
+
+> Доклад о производительности
+
+<img align="right" src="./themes/tw/images/logo.png" width="100" height="100" title="Логотип" alt="Логотип">
+
+📖 [Структура](./docs/structure.md)
 
 ## 🐱‍💻 Команды
 
