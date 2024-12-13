@@ -5,5 +5,5 @@ pre-commit:
     - merge
     - rebase
   commands:
-    lint:
-      run: npm run lint
+    format:
+      run: npm run format
