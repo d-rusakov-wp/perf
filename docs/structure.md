@@ -2,6 +2,8 @@
 flowchart TB
   subgraph themes
     direction LR
+    ribbon-custom --> index.html
+    tw --> index.html
 
     subgraph ribbon-custom
       direction LR
@@ -19,5 +21,7 @@ flowchart TB
       styles --> index.html
       video --> index.html
     end
+  end
+  subgraph index.html
   end
 ```
