@@ -4,8 +4,8 @@
 
 <img align="right" src="./themes/tw/images/logo.png" width="100" height="100" alt="Логотип" title="Логотип">
 
-- 📖 [Структура](./docs/structure.md)
-- 💻 [Команды](./docs/commands.md)
-- 🌿 [Ветки](./docs/branches.md)
+📖 [Структура](./docs/structure.md) <br>
+💻 [Команды](./docs/commands.md) <br>
+🌿 [Ветки](./docs/branches.md)
 
 ### Powered by [Shower](https://github.com/shower/shower)
