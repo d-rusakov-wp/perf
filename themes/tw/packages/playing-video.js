@@ -1,5 +1,5 @@
 function stopVideo(video) {
-  video.pause().catch(console.error);
+  video.pause();
   video.currentTime = 0;
 }
 

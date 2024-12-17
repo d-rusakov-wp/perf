@@ -4,12 +4,12 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "homepage": "https://github.com/d-rusakov-wp/perf",
+  "homepage": "https://github.com/d-rusakov-wp/perf/#readme",
   "scripts": {
-    "dev": "kill-port 8080 & shower serve & npm run tw:watch",
+    "dev": "kill-port 8080 && shower serve && npm run tw:watch",
     "format": "prettier . --write",
     "build": "npm run tw:build",
-    "publish": "npm run build & shower publish --files '**' --files '!{docs,node_modules}{,/**}' --files '!*.{md,toml,json,yml,lockb,config.js,config.ts}'",
+    "publish": "npm run build && shower publish --files '**' --files '!{docs,node_modules}{,/**}' --files '!*.{md,toml,json,yml,lockb,config.js,config.ts}'",
     "tw:watch": "tailwindcss -i ./themes/tw/styles/styles.css -o ./bundled/styles.css --watch",
     "tw:build": "tailwindcss -i ./themes/tw/styles/styles.css -o ./bundled/styles.css --minify",
     "search-unused-images": "node ./themes/tw/packages/search-unused-images.js"
@@ -19,19 +19,20 @@
     "@shower/ribbon": "3.5.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "19.6.0",
+    "@commitlint/cli": "19.6.1",
     "@commitlint/config-conventional": "19.6.0",
     "@shower/cli": "^0.3.1",
     "autoprefixer": "^10.4.20",
     "cssnano": "^7.0.6",
     "htmlparser2": "9.1.0",
     "kill-port": "2.0.1",
-    "lefthook": "1.9.0",
+    "lefthook": "1.9.2",
     "path-exists-cli": "2.0.0",
     "postcss": "8.4.49",
+    "postcss-nesting": "13.0.1",
     "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "0.6.9",
-    "tailwindcss": "3.4.16"
+    "tailwindcss": "3.4.17"
   },
   "engines": {
     "node": ">= 18",
