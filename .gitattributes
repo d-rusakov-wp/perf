@@ -15,3 +15,5 @@ package-lock.json binary
 *.png binary
 
 package-lock.json -diff
+
+*.lockb binary diff=lockb
