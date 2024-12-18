@@ -352,6 +352,9 @@
         </blockquote>
         <figcaption>Дональд Кнут</figcaption>
       </figure>
+      <footer>
+        <p>А ещё прежде чем оптимизировать (сделайть какой-то действие) - обязательно замерьте показатели</p>
+      </footer>
     </section>
 
     <section class="slide">
@@ -620,8 +623,8 @@
     <section class="slide">
       <div class="shout flex items-center justify-center">
         <h2 class="flex items-center justify-center">
-          <span>Web Vitals</span>
-          <span>&nbsp;-&gt; Core Web Vitals</span>
+          <span translate="no">Web Vitals</span>
+          <span translate="no">&#8594; Core Web Vitals</span>
         </h2>
         <picture>
           <source srcset="themes/tw/pictures/emoji/lightning.webp" type="image/webp" />
@@ -630,6 +633,7 @@
       </div>
       <a href="https://web.dev" class="copyright" target="_blank" rel="noopener noreferrer">Web Dev</a>
       <footer>
+        <p>Хорошая база для оценки скорости</p>
         <p>Достижениие 100 баллов сложно и важно лишь войти в зеленую зону от 80 баллов.</p>
       </footer>
     </section>
@@ -1376,6 +1380,34 @@
       <h2 class="sr-only">Настройки Chrom'а</h2>
       <a class="place" href="chrome://settings/content/v8" rel="noopener noreferrer" target="_blank"
         >chrome://settings/content/v8</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2>Tracing</h2>
+      <footer>
+        <p>
+          Tracing (трассировка) — метод наблюдения за выполнением операций в программном обеспечении, который помогает
+          отслеживать путь запросов как внутри системы, так и между различными ее компонентами и внешними сервисами.
+          Трассировка предоставляет детальную видимость о том, как обрабатываются вызовы, где возникают задержки и
+          ошибки.Чтобы лучше понять, что такое Tracing, давайте рассмотрим его ключевые элементы.
+        </p>
+        <p>
+          Trace – полный путь прохождения запроса через систему, в том числе распределенную. Содержит набор связанных
+          span'ов, представляющих все шаги обработки запроса.
+        </p>
+        <p>
+          Span – отдельная операция или шаг внутри trace, например, вызов базы данных или HTTP-запрос к микросервису.
+          Включает в себя уникальный идентификатор (Span ID), временные метки (начало и конец выполнения), метки (tags)
+          и логи (logs) для детальной информации.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Long Task</h2>
+      <a class="copyright" href="https://web.dev/articles/optimize-long-tasks?hl=ru"
+        >https://web.dev/articles/optimize-long-tasks?hl=ru</a
       >
     </section>
 
@@ -4388,7 +4420,7 @@
       <h2 class="cover left-0 mt-[24px] -translate-y-[50%] pl-[120px] text-left">
         <span class="text-light-gray">Акт 4</span>
         <br />
-        <span>Кейсы</span>
+        <span>Кейсы (нарратив)</span>
       </h2>
       <footer>
         <p>Де-факто.</p>
