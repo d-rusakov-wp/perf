@@ -370,6 +370,123 @@
       </footer>
     </section>
 
+    <section class="slide">
+      <div class="container">
+        Hover / Tap
+        <div class="dot one"><br /></div>
+        <div class="dot two"><br /></div>
+        <div class="dot three"><br /></div>
+        <div class="dot four"><br /></div>
+        <div class="dot five"><br /></div>
+        <div class="dot six"><br /></div>
+        <div class="dot seven"><br /></div>
+        <div class="dot eight"><br /></div>
+        <div class="dot nine"><br /></div>
+        <div class="dot ten"><br /></div>
+        <div class="dot eleven"><br /></div>
+        <div class="dot twelve"><br /></div>
+        <div class="dot thirteen"><br /></div>
+        <div class="dot fourteen"><br /></div>
+        <div class="dot fifteen"><br /></div>
+        <div class="dot sixteen"><br /></div>
+        <div class="dot seventeen"><br /></div>
+        <div class="dot eighteen"><br /></div>
+        <div class="dot nineteen"><br /></div>
+        <div class="dot twenty"><br /></div>
+      </div>
+      <style>
+        .container {
+          width: 300px;
+          height: 100px;
+          position: relative;
+          margin: 100px auto;
+          border-radius: 50px;
+          border: 3px dotted #eee;
+          text-align: center;
+          font-family: sans-serif;
+          padding-top: 10px;
+        }
+
+        .dot {
+          position: absolute;
+          background: black;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          transform: rotate(0deg);
+          top: 25px;
+          left: 25px;
+          opacity: 0.1;
+          transition: all 0.75s cubic-bezier(0.71, 0, 0.33, 1.56) 0ms;
+        }
+
+        .container:hover .dot {
+          transform: rotate(360deg);
+          border-radius: 0%;
+          left: 225px;
+          background: pink;
+        }
+
+        .dot.two {
+          transition-delay: 3ms;
+        }
+        .dot.three {
+          transition-delay: 6ms;
+        }
+        .dot.four {
+          transition-delay: 9ms;
+        }
+        .dot.five {
+          transition-delay: 11ms;
+        }
+        .dot.six {
+          transition-delay: 14ms;
+        }
+        .dot.seven {
+          transition-delay: 17ms;
+        }
+        .dot.eight {
+          transition-delay: 20ms;
+        }
+        .dot.nine {
+          transition-delay: 23ms;
+        }
+        .dot.ten {
+          transition-delay: 26ms;
+        }
+        .dot.eleven {
+          transition-delay: 29ms;
+        }
+        .dot.twelve {
+          transition-delay: 32ms;
+        }
+        .dot.thirteen {
+          transition-delay: 35ms;
+        }
+        .dot.fourteen {
+          transition-delay: 38ms;
+        }
+        .dot.fifteen {
+          transition-delay: 41ms;
+        }
+        .dot.sixteen {
+          transition-delay: 44ms;
+        }
+        .dot.seventeen {
+          transition-delay: 47ms;
+        }
+        .dot.eighteen {
+          transition-delay: 50ms;
+        }
+        .dot.nineteen {
+          transition-delay: 53ms;
+        }
+        .dot.twenty {
+          transition-delay: 56ms;
+        }
+      </style>
+    </section>
+
     <section class="slide" id="cube">
       <h2 class="sr-only">Видео</h2>
       <video
@@ -1596,7 +1713,191 @@
     </section>
 
     <section class="slide">
-      <h2 class="sr-only">Lazy load</h2>
+      <pre>
+        <code>
+          while (hasWorkToDo) {
+              /* Run timers, I/O callbacks,
+                 check for incoming connections,
+                 and so on... */
+              doWork();
+          }
+        </code>
+      </pre>
+      <footer>
+        <p>
+          JS работает в однопоточной среде с циклом событий, архитектурой, которую очень легко рассуждать. Это
+          непрерывный цикл, выполняющий входящую работу. Указанная работа может планировать больше на будущее.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <pre>
+        <code>
+          /* setImmediate registers a
+   callback on the event loop */
+setImmediate(() => {
+   console.log("This will at some point in the future");
+});
+
+/* synchronous work that you
+   will never see the end of */
+findNthPrime(9999999);
+
+        </code>
+      </pre>
+      <footer>
+        <p>
+          Синхронная работа запускается немедленно; асинхронная работа запускается, когда не осталось синхронной работы
+          для выполнения (или просто «позже» ). В идеале профиль выполнения вашего приложения должен позволять циклу
+          событий запускаться часто для выполнения фоновой работы (например, принятия новых подключений, запуска
+          таймеров и т. д.).
+        </p>
+        <p>
+          Такая конструкция подразумевает, что выполнение синхронной работы — это Большое Дело : за каждый непрерывный
+          момент времени, который выполняется, цикл событий не может выполнить никакой работы — никакой!
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <pre>
+        <code>
+          /* If a request to /computePrimes
+             has been sent, this route will
+             never respond. It will timeout. */
+          app.get("/home", () => {
+              return response("Welcome Home!");
+          });
+
+          app.get("/computePrimes", () => {
+              /* synchronous work that you
+                 will never see the end of. */
+              return response(findNthPrime(9999999));
+          });
+        </code>
+      </pre>
+      <footer>
+        <p>Бросьте в него больше узлов.</p>
+        <p>Рефакторинг findNthPrimeдля выполнения работы асинхронно</p>
+        <p>Выгрузка findNthPrimeв другой поток</p>
+        <!--        https://www.bbss.dev/posts/eventloop/-->
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2>proposal-import-sync</h2>
+      <pre>
+        <code>
+          let fs;
+            try {
+              fs = import.sync('node:fs');
+            } catch {}
+
+            if (fs) {
+              // Use node:fs, only if it is available
+            }
+        </code>
+      </pre>
+      <a class="copyright" href="https://github.com/tc39/proposal-import-sync"
+        >https://github.com/tc39/proposal-import-sync</a
+      >
+    </section>
+
+    <section class="slide">
+      <h2>Build Your Own Site Speed Testing Tool with Puppeteer</h2>
+      <footer>
+        <p>
+          Производительность сайта играет решающую роль в обеспечении бесперебойного пользовательского опыта. Медленная
+          загрузка, неожиданные изменения макета и неотзывчивые взаимодействия могут негативно повлиять как на SEO, так
+          и на удовлетворенность пользователей. Однако для выявления этих проблем в реальных условиях требуются
+          правильные инструменты.
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <pre>
+        <code>
+          npm i puppeteer
+
+          const puppeteer = require("puppeteer");
+
+async function runBasicTest(url) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(url);
+
+  const metrics = await page.metrics();
+  console.log("Basic Metrics:", metrics);
+
+  await browser.close();
+}
+
+runBasicTest("https://www.example.com");
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <pre>
+        <code>
+          Basic Metrics: {
+            Timestamp: 1234567890,
+            Nodes: 2045,
+            Frames: 1,
+            ScriptDuration: 1.2,
+            LayoutDuration: 0.45
+          }
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <h2>Simulating Real-World Network Conditions</h2>
+      <pre>
+        <code>
+          import { PredefinedNetworkConditions } from "puppeteer";
+
+          const slow3G = PredefinedNetworkConditions["Slow 3G"];
+          const fast4G = PredefinedNetworkConditions["Fast 4G"];
+
+          await page.emulateNetworkConditions(slow3G);
+        </code>
+      </pre>
+    </section>
+
+    <section class="slide">
+      <a href="https://calendar.perfplanet.com/2024/build-your-own-site-speed-testing-tool-with-puppeteer/"
+        >https://calendar.perfplanet.com/2024/build-your-own-site-speed-testing-tool-with-puppeteer/</a
+      >
+    </section>
+
+    <section class="slide">
+      <p>
+        Бюджет производительности — это порог, который вы применяете к метрикам, которые вас больше всего интересуют.
+        Затем вы можете настроить свои инструменты мониторинга для отправки вам оповещений — или даже прерывания сборки,
+        если вы тестируете в своей промежуточной среде — при нарушении ваших бюджетов.
+      </p>
+      <a class="copyright" href="https://www.speedcurve.com/web-performance-guide/complete-guide-performance-budgets/"
+        >https://www.speedcurve.com/web-performance-guide/complete-guide-performance-budgets/</a
+      >
+      <footer>
+        <p>Хорошая диаграмма бюджета производительности, такая как приведенная выше, должна показать вам:</p>
+        <p>Метрика, которую вы отслеживаете</p>
+        <p>Пороговое значение, которое вы создали для этой метрики</p>
+        <p>Когда вы превышаете этот порог</p>
+        <p>Как долго вы оставались вне пределов досягаемости?</p>
+        <p>Когда вы вернулись ниже порога</p>
+        <p>
+          Цели производительности являются амбициозными. Они отвечают на вопрос «Насколько быстрым я хочу быть в
+          конечном итоге?»
+        </p>
+      </footer>
+    </section>
+
+    <section class="slide">
+      <h2 class="sr-only">Lazy load vs Eager load</h2>
       <img class="place" src="themes/tw/images/shared/tools/http.gif" width="700" height="860" alt="Изображение" />
       <footer>
         <p>
@@ -1604,6 +1905,12 @@
           страница&nbsp;&mdash; лицо вашей фирмы в&nbsp;интернете. Захватите внимание пользователя, удержите его
           и&nbsp;перенаправьте на&nbsp;нужные ему разделы. Эффективно работающая главная страница сайта является
           четвертой татуировкой для вашего ресурса.
+        </p>
+        <p>Метод ленивой загрузки не идеален для случаев, когда данные в одной части приложения зависят от другой.</p>
+        <p>
+          При ленивой загрузке выполняется больше вызовов базы данных по сравнению с другими методами. Это происходит
+          потому, что данные не извлекаются все сразу, а должны непрерывно извлекаться в разные моменты времени в
+          приложении.
         </p>
       </footer>
     </section>
@@ -3321,6 +3628,10 @@
           допускает выполнение цикла один раз.
         </p>
       </footer>
+    </section>
+
+    <section class="slide">
+      <h2>Detecting web performance regressions</h2>
     </section>
 
     <section class="slide">
@@ -5121,6 +5432,13 @@ something at 60 frames a second for a game and suddenly, you run out of real-
       <h2 class="shout">
         20% усилий <span class="next"><span class="text-orange">=</span> 80% результата</span>
       </h2>
+      <footer>
+        <p>
+          Закон Парето&nbsp;&mdash; усилия должны быть избирательными. Чтобы&nbsp;20% усилий приносили&nbsp;80%
+          результатов, сначала нужно понять, куда прикладывать эти усилия. Качество всегда перевешивает количество,
+          а&nbsp;результат важнее времени затраченного на&nbsp;задачу.
+        </p>
+      </footer>
     </section>
 
     <section class="slide">
